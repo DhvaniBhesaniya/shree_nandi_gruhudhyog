@@ -4,5 +4,5 @@ import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  base: '/shree-nandi-gruhudhyog/',
+  base: '/shree_nandi_gruhudhyog/',
 })
