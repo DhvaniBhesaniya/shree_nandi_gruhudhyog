@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X } from 'lucide-react'
-import logo from '../assets/my_shop_images/shree_nandi_gruhudhyog_logo.jpeg'
+import logo from '../assets/my_shop_images/shree_nandi_gruhudhyog_logo.png'
 
 const navLinks = [
   { label: 'Home', href: '#home' },
@@ -46,7 +46,7 @@ export default function Navbar() {
               </a>
             ))}
             <motion.a
-              href="https://wa.me/91XXXXXXXXXX"
+              href="https://wa.me/919998714455"
               target="_blank"
               rel="noopener noreferrer"
               whileHover={{ scale: 1.05 }}
@@ -90,7 +90,7 @@ export default function Navbar() {
                 </a>
               ))}
               <a
-                href="https://wa.me/91XXXXXXXXXX"
+                href="https://wa.me/919998714455"
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => setIsOpen(false)}
