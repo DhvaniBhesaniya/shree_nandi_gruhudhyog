@@ -1,5 +1,6 @@
-import { motion } from 'framer-motion'
-import { Eye } from 'lucide-react'
+import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Eye, X } from 'lucide-react'
 import shopExterior from '../assets/my_shop_images/shop_image_from_outside.jpeg'
 import shopExterior2 from '../assets/my_shop_images/shop_image_from_outside_2.jpeg'
 import farsanImg from '../assets/my_shop_images/Farsan.jpeg'
@@ -12,8 +13,8 @@ import wafersImg from '../assets/my_shop_images/wafers_and_chocolates.jpeg'
 import chocolateImg from '../assets/my_shop_images/chocolate_box.jpeg'
 import cornitosImg from '../assets/my_shop_images/Cornitos_chips.jpeg'
 import maggieImg from '../assets/my_shop_images/Maggie.jpeg'
-import optionalImg from '../assets/my_shop_images/Optional.jpeg'
-import logoImg from '../assets/my_shop_images/shree_nandi_gruhudhyog_logo.jpeg'
+// import optionalImg from '../assets/my_shop_images/Optional.jpeg'
+import logoImg from '../assets/my_shop_images/shree_nandi_gruhudhyog_logo2.jpeg'
 
 const images = [
   { src: shopExterior, alt: 'Shree Nandi Gruhudhyog — Our Shop' },
@@ -28,7 +29,7 @@ const images = [
   { src: chocolateImg, alt: 'Chocolate & strawberry wafer rolls' },
   { src: cornitosImg, alt: 'Cornitos nacho crisps & munchies' },
   { src: maggieImg, alt: 'Chocolate rolls & Maggi noodles' },
-  { src: optionalImg, alt: 'Inside our shop — counter view' },
+  // { src: optionalImg, alt: 'Inside our shop — counter view' },
   { src: logoImg, alt: 'Shree Nandi — श्री नंदी logo' },
 ]
 
@@ -43,8 +44,10 @@ const itemVariants = {
 }
 
 export default function Gallery() {
+  const [selectedImg, setSelectedImg] = useState(null)
+
   return (
-    <section className="bg-cream py-16 md:py-20">
+    <section id="shop-images" className="bg-cream py-16 md:py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.h2
           initial={{ opacity: 0, y: 30 }}
@@ -76,7 +79,8 @@ export default function Gallery() {
             <motion.div
               key={i}
               variants={itemVariants}
-              className="rounded-2xl overflow-hidden group relative cursor-pointer break-inside-avoid"
+              onClick={() => setSelectedImg(img)}
+              className="rounded-2xl overflow-hidden group relative cursor-pointer break-inside-avoid shadow-sm hover:shadow-xl transition-all"
             >
               <img
                 src={img.src}
@@ -93,6 +97,42 @@ export default function Gallery() {
           ))}
         </motion.div>
       </div>
+
+      <AnimatePresence>
+        {selectedImg && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSelectedImg(null)}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 sm:p-8 cursor-zoom-out"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="relative max-w-5xl w-full max-h-[90vh] flex flex-col items-center justify-center cursor-default"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={() => setSelectedImg(null)}
+                className="absolute -top-12 right-0 sm:-right-8 text-white hover:text-saffron transition-colors cursor-pointer"
+                aria-label="Close"
+              >
+                <X size={32} />
+              </button>
+              <img
+                src={selectedImg.src}
+                alt={selectedImg.alt}
+                className="max-w-full max-h-[80vh] object-contain rounded-lg shadow-2xl"
+              />
+              <p className="text-white mt-4 font-body text-lg text-center bg-black/50 px-6 py-2 rounded-full">
+                {selectedImg.alt}
+              </p>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   )
 }

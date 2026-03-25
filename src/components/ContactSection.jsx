@@ -3,9 +3,9 @@ import { motion } from 'framer-motion'
 import { MapPin, Phone, Mail, Clock, MessageCircle } from 'lucide-react'
 
 const contactInfo = [
-  { icon: MapPin, label: 'Address', value: 'Shree Nandi Gruhudhyog,Block No: A ,  Ground Floor Shop No: A-12, PANACHE, Khoraj, Gandhinagar – 382421 , Gujarat , India' },
-  { icon: Phone, label: 'Phone', value: '+91 9998714455' },
-  { icon: Mail, label: 'Email', value: 'shreenandigruhudhyog@gmail.com' },
+  { icon: MapPin, label: 'Address', value: 'Shree Nandi Gruhudhyog,Block No: A ,  Ground Floor Shop No: A-12, PANACHE, Khoraj, Gandhinagar – 382421 , Gujarat , India', link: 'https://maps.app.goo.gl/oJNutRSV7BzHWXP68' },
+  { icon: Phone, label: 'Phone', value: '+91 9998714455', link: 'tel:+919998714455' },
+  { icon: Mail, label: 'Email', value: 'shreenandigruhudhyog@gmail.com', link: 'mailto:shreenandigruhudhyog@gmail.com' },
   { icon: Clock, label: 'Business Hours', value: 'Mon–Sun: 9 AM – 9 PM' },
 ]
 
@@ -74,16 +74,28 @@ export default function ContactSection() {
           >
             {contactInfo.map((info) => {
               const Icon = info.icon
+              const Wrapper = info.link ? 'a' : 'div'
+              const wrapperProps = info.link ? {
+                href: info.link,
+                target: info.label === 'Address' ? '_blank' : undefined,
+                rel: info.label === 'Address' ? 'noopener noreferrer' : undefined,
+                className: "flex items-start gap-4 hover:bg-cream p-3 -ml-3 rounded-xl transition-colors cursor-pointer group"
+              } : {
+                className: "flex items-start gap-4 p-3 -ml-3"
+              }
+
               return (
-                <div key={info.label} className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-saffron/10 flex items-center justify-center shrink-0">
+                <Wrapper key={info.label} {...wrapperProps}>
+                  <div className="w-12 h-12 rounded-xl bg-saffron/10 flex items-center justify-center shrink-0 group-hover:bg-saffron/20 transition-colors">
                     <Icon size={22} className="text-saffron" />
                   </div>
                   <div>
                     <h4 className="font-heading text-brown font-bold text-base">{info.label}</h4>
-                    <p className="font-body text-gray-600 text-sm">{info.value}</p>
+                    <p className={`font-body text-sm mt-1 leading-relaxed ${info.link ? 'text-gray-700 group-hover:text-saffron transition-colors' : 'text-gray-600'}`}>
+                      {info.value}
+                    </p>
                   </div>
-                </div>
+                </Wrapper>
               )
             })}
 
@@ -99,6 +111,20 @@ export default function ContactSection() {
               <MessageCircle size={20} />
               Chat on WhatsApp
             </motion.a>
+
+            {/* Embedded Google Map */}
+            <div className="mt-8 rounded-2xl overflow-hidden shadow-lg h-64 md:h-72 w-full border-4 border-white">
+              <iframe
+                src="https://maps.google.com/maps?q=Shree+Nandi+Gruhudhyog,+PANACHE,+Khoraj,+Gandhinagar,+Gujarat&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen=""
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Shree Nandi Gruhudhyog Location"
+              />
+            </div>
           </motion.div>
 
           {/* Enquiry Form */}

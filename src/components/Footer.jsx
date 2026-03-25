@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import logo from '../assets/my_shop_images/shree_nandi_gruhudhyog_logo.jpeg'
+import logo from '../assets/my_shop_images/shree_nandi_gruhudhyog_logo.png'
 
 export default function Footer() {
   const quickLinks = [
@@ -27,7 +27,7 @@ export default function Footer() {
             {/* Social Icons */}
             <div className="flex items-center gap-4 mt-5">
               <a
-                href="https://wa.me/91XXXXXXXXXX"
+                href="https://wa.me/919998714455"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-gold hover:text-saffron transition-colors duration-300 text-sm font-body font-semibold"

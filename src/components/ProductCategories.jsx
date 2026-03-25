@@ -101,9 +101,9 @@ export default function ProductCategories() {
               <div className="bg-white p-5">
                 <h3 className="font-heading text-brown text-xl font-bold mb-1">{cat.name}</h3>
                 <p className="text-gray-600 font-body text-sm mb-3">{cat.description}</p>
-                <span className="text-saffron font-body font-semibold text-sm hover:underline">
+                <a href="#shop-images" className="text-saffron font-body font-semibold text-sm hover:underline block w-max">
                   View All →
-                </span>
+                </a>
               </div>
             </motion.div>
           ))}
