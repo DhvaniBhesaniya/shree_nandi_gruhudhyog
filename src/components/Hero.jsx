@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import shopExterior from '../assets/my_shop_images/shop_image_from_outside.jpeg'
+import heroBg from '../assets/premium_indian_snacks.png'
 
 const floatingBadges = [
   { label: '🥨 Namkeen', className: 'top-[20%] left-[5%]', delay: 0 },
@@ -13,8 +13,8 @@ export default function Hero() {
     <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image — Actual shop exterior */}
       <img
-        src={shopExterior}
-        alt="Shree Nandi Gruhudhyog shop"
+        src={heroBg}
+        alt="Premium Indian traditional snacks and namkeen"
         loading="eager"
         className="absolute inset-0 w-full h-full object-cover"
       />
