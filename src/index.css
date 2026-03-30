@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+/* Prevent horizontal overflow from off-screen framer-motion animations */
+html,
+body {
+  overflow-x: hidden;
+}
+
 @theme {
   --color-saffron: #FF6B00;
   --color-cream: #FFF8F0;

@@ -12,11 +12,11 @@ import chocolateImg from '../assets/my_shop_images/chocolate_box.jpeg'
 const products = [
   { name: 'Masala Gathiya', desc: 'Crispy spiced chickpea flour gathiya — our best seller', rating: 4.9, badge: '🔥 Bestseller', image: farsan2Img },
   { name: 'Spring Namkeen', desc: 'Schezwan, beetroot & samosa puri — flavoured crunchy rings', rating: 4.8, badge: '🔥 Bestseller', image: springNamkeenImg },
-  { name: 'Methi Khakhra', desc: 'Thin crispy fenugreek-flavoured whole wheat khakhra', rating: 4.7, badge: null, image: khakhraImg },
-  { name: 'Farali Bhakhri', desc: 'Coin khakhra & farali bhakhri for fasting days', rating: 4.8, badge: '🔥 Bestseller', image: coinKhakhraImg },
+  { name: 'Khakhra', desc: 'Thin crispy fenugreek-flavoured whole wheat khakhra', rating: 4.7, badge: null, image: khakhraImg },
+  { name: 'Bhakhri', desc: 'Coin khakhra & farali bhakhri for fasting days', rating: 4.8, badge: '🔥 Bestseller', image: coinKhakhraImg },
   { name: 'Chevdo Mix', desc: 'Crunchy mixed chevdo, gathiya, sev & dal mix', rating: 4.6, badge: null, image: farsanImg },
-  { name: 'Mango Pickle', desc: 'Tangy mango, lime & mixed pickles from trusted brands', rating: 4.9, badge: null, image: pickelsImg },
-  { name: 'Potato Wafers', desc: 'Crispy banana chips, potato wafers & biscuit khari', rating: 4.5, badge: null, image: wafersImg },
+  { name: 'Pickles', desc: 'Tangy mango, lime & mixed pickles from trusted brands', rating: 4.9, badge: null, image: pickelsImg },
+  { name: 'Wafers', desc: 'Crispy banana chips, potato wafers & biscuit khari', rating: 4.5, badge: null, image: wafersImg },
   { name: 'Chocolate Wafer Rolls', desc: 'Strawberry, chocolate & orange flavour wafer rolls', rating: 4.8, badge: '🔥 Bestseller', image: chocolateImg },
 ]
 
