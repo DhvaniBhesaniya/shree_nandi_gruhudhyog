@@ -1,26 +1,42 @@
 import { motion } from 'framer-motion'
-import shopExterior2 from '../assets/my_shop_images/shop_image_from_outside_2.jpeg'
+import shopExterior from '../assets/my_shop_images/shop_exterior_day.jpeg'
+import counterLogo from '../assets/my_shop_images/shop_logo_banner.jpeg'
 
 export default function AboutUs() {
   return (
     <section id="about" className="bg-brown text-white py-16 md:py-20 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          {/* Image — Actual shop photo */}
+          {/* Images — Actual shop photos */}
           <motion.div
             initial={{ opacity: 0, x: -80 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7 }}
+            className="flex flex-col gap-5"
           >
             <div className="rounded-2xl overflow-hidden shadow-2xl">
               <img
-                src={shopExterior2}
-                alt="Shree Nandi Gruhudhyog shop at night"
+                src={shopExterior}
+                alt="Shree Nandi Gruhudhyog — shop front view at night"
                 loading="lazy"
-                className="w-full h-full object-cover"
+                className="w-full h-auto object-cover"
               />
             </div>
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="rounded-2xl overflow-hidden shadow-2xl"
+            >
+              <img
+                src={counterLogo}
+                alt="Shree Nandi — શ્રી નંદી counter with Gujarati logo"
+                loading="lazy"
+                className="w-full h-auto object-cover"
+              />
+            </motion.div>
           </motion.div>
 
           {/* Text */}

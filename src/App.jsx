@@ -6,8 +6,11 @@ import Hero from './components/Hero'
 import StatsBanner from './components/StatsBanner'
 import ProductCategories from './components/ProductCategories'
 import FeaturedProducts from './components/FeaturedProducts'
+import BrandsMarquee from './components/BrandsMarquee'
+import BeverageMenu from './components/BeverageMenu'
 import WhyChooseUs from './components/WhyChooseUs'
 import AboutUs from './components/AboutUs'
+import VirtualShopTour from './components/VirtualShopTour'
 import Testimonials from './components/Testimonials'
 import Gallery from './components/Gallery'
 import ContactSection from './components/ContactSection'
@@ -37,11 +40,14 @@ export default function App() {
         >
           <Navbar />
           <Hero />
-          {/* <StatsBanner /> */}
+          <StatsBanner />
           <ProductCategories />
           <FeaturedProducts />
+          <BrandsMarquee />
+          <BeverageMenu />
           <WhyChooseUs />
           <AboutUs />
+          <VirtualShopTour />
           <Testimonials />
           <Gallery />
           <ContactSection />

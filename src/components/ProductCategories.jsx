@@ -5,6 +5,8 @@ import khakhraImg from '../assets/my_shop_images/Khakhra.jpeg'
 import chocolateImg from '../assets/my_shop_images/chocolate_box.jpeg'
 import cornitosImg from '../assets/my_shop_images/Cornitos_chips.jpeg'
 import wafersImg from '../assets/my_shop_images/wafers_and_chocolates.jpeg'
+import sodaImg from '../assets/my_shop_images/soda_dispenser.jpeg'
+import bakeryImg from '../assets/my_shop_images/biscuit_boxes_shelves.jpeg'
 
 const categories = [
   {
@@ -36,6 +38,16 @@ const categories = [
     name: 'Wafers & Biscuits',
     description: 'Crispy potato wafers, banana chips, and perfectly baked biscuits & khari.',
     image: wafersImg,
+  },
+  {
+    name: 'Cold Drinks & Soda',
+    description: 'Refreshing sodas in 15+ flavours — jeera masala, limbu, orange, cola & special mixes.',
+    image: sodaImg,
+  },
+  {
+    name: 'Bakery & Cookies',
+    description: 'Premium cookies, cake rusk & biscuits — Cadbury, Good Day, Pure Magic & more.',
+    image: bakeryImg,
   },
 ]
 
@@ -81,7 +93,7 @@ export default function ProductCategories() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
         >
           {categories.map((cat) => (
             <motion.div
@@ -90,7 +102,7 @@ export default function ProductCategories() {
               whileHover={{ scale: 1.03, y: -4 }}
               className="rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all group cursor-pointer hover:ring-2 hover:ring-saffron"
             >
-              <div className="h-56 overflow-hidden">
+              <div className="h-52 overflow-hidden">
                 <img
                   src={cat.image}
                   alt={cat.name}

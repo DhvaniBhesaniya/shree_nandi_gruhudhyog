@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import heroBg from '../assets/premium_indian_snacks.png'
+import heroBg from '../assets/my_shop_images/shop_exterior_night.jpeg'
 
 const floatingBadges = [
   { label: '🥨 Namkeen', className: 'top-[20%] left-[5%]', delay: 0 },
@@ -16,10 +16,10 @@ export default function Hero() {
         src={heroBg}
         alt="Premium Indian traditional snacks and namkeen"
         loading="eager"
-        className="absolute inset-0 w-full h-full object-cover"
+        className="absolute inset-x-0 bottom-0 top-16 md:top-20 w-full h-[calc(100vh-4rem)] md:h-[calc(100vh-5rem)] object-cover object-top"
       />
-      {/* Dark Overlay */}
-      <div className="absolute inset-0 bg-black/50" />
+      {/* Dark Overlay — lighter at top to show signboard */}
+      <div className="absolute inset-x-0 bottom-0 top-16 md:top-20 bg-gradient-to-b from-black/30 via-black/50 to-black/60" />
 
       {/* Floating Product Badges */}
       {floatingBadges.map((badge) => (
@@ -43,7 +43,7 @@ export default function Hero() {
       ))}
 
       {/* Content */}
-      <div className="relative z-10 flex flex-col items-center justify-center text-center text-white px-4 max-w-5xl mx-auto">
+      <div className="relative z-10 flex flex-col items-center justify-center text-center text-white px-4 max-w-5xl mx-auto mt-32 sm:mt-0">
         <motion.h1
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
