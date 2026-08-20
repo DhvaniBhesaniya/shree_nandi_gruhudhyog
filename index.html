@@ -1,18 +1,110 @@
 <!doctype html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="/shree_nandi_gruhudhyog/logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Shree Nandi Gruhudhyog — Premium Traditional Indian Food from Gujarat</title>
-    <meta name="description" content="Shree Nandi Gruhudhyog offers authentic homemade namkeen, khakhra, pickles, bakery products, cold drinks, wafers, biscuits and more — crafted with love in Gujarat, India." />
+
+    <!--
+      Applied before first paint so a returning dark-mode visitor never sees a
+      flash of the light theme. Must stay inline and ahead of the stylesheet.
+    -->
+    <script>
+      try {
+        var t = localStorage.getItem('sng-theme')
+        if (t === 'dark' || (!t && matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark')
+        }
+      } catch (e) {
+        /* private browsing — fall through to light */
+      }
+    </script>
+
+    <meta name="theme-color" content="#fdfcfb" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#1c1613" media="(prefers-color-scheme: dark)" />
+
+    <link rel="icon" href="/shree_nandi_gruhudhyog/favicon-32.png" sizes="32x32" />
+    <link rel="icon" href="/shree_nandi_gruhudhyog/favicon-16.png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="/shree_nandi_gruhudhyog/apple-touch-icon.png" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
-    <script type="module" crossorigin src="/shree_nandi_gruhudhyog/assets/index-DmXhK2oi.js"></script>
-    <link rel="stylesheet" crossorigin href="/shree_nandi_gruhudhyog/assets/index-DAGTCNYc.css">
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,500..700,0..100,0..1&family=Inter:wght@400..600&family=Noto+Serif+Gujarati:wght@400..700&display=swap"
+    />
+
+    <!-- Title, description, canonical, Open Graph, Twitter and LocalBusiness
+         JSON-LD are all injected here from src/lib/site.js at build time, so
+         business details exist in exactly one place. See vite.config.js. -->
+    
+    <!-- Vite rewrites <link rel="icon"> hrefs for the deploy base but not
+         rel="manifest", so this one is emitted with the base already applied. -->
+    <link rel="manifest" href="/shree_nandi_gruhudhyog/manifest.webmanifest" />
+    <title>Shree Nandi Gruhudhyog — Gujarati Farsan, Namkeen &amp; Khakhra in Gandhinagar</title>
+    <meta name="description" content="Authentic Gujarati farsan, namkeen, khakhra, bhakhri, pickles, bakery, soda bar and ice cream — homemade specialities plus trusted brands, in Khoraj, Gandhinagar." />
+    <link rel="canonical" href="https://dhvanibhesaniya.github.io/shree_nandi_gruhudhyog/" />
+    <meta name="author" content="Shree Nandi Gruhudhyog" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="geo.region" content="IN-GJ" />
+    <meta name="geo.placename" content="Gandhinagar" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Shree Nandi Gruhudhyog" />
+    <meta property="og:title" content="Shree Nandi Gruhudhyog — Gujarati Farsan, Namkeen &amp; Khakhra in Gandhinagar" />
+    <meta property="og:description" content="Authentic Gujarati farsan, namkeen, khakhra, bhakhri, pickles, bakery, soda bar and ice cream — homemade specialities plus trusted brands, in Khoraj, Gandhinagar." />
+    <meta property="og:url" content="https://dhvanibhesaniya.github.io/shree_nandi_gruhudhyog/" />
+    <meta property="og:image" content="https://dhvanibhesaniya.github.io/shree_nandi_gruhudhyog/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Shree Nandi Gruhudhyog storefront in Gandhinagar" />
+    <meta property="og:locale" content="en_IN" />
+    <meta property="og:locale:alternate" content="gu_IN" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Shree Nandi Gruhudhyog — Gujarati Farsan, Namkeen &amp; Khakhra in Gandhinagar" />
+    <meta name="twitter:description" content="Authentic Gujarati farsan, namkeen, khakhra, bhakhri, pickles, bakery, soda bar and ice cream — homemade specialities plus trusted brands, in Khoraj, Gandhinagar." />
+    <meta name="twitter:image" content="https://dhvanibhesaniya.github.io/shree_nandi_gruhudhyog/og-image.jpg" />
+
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":["GroceryStore","FoodEstablishment"],"@id":"https://dhvanibhesaniya.github.io/shree_nandi_gruhudhyog/","name":"Shree Nandi Gruhudhyog","alternateName":"શ્રી નંદી ગૃહ ઉદ્યોગ","description":"Authentic Gujarati farsan, namkeen, khakhra, bhakhri, pickles, bakery, soda bar and ice cream — homemade specialities plus trusted brands, in Khoraj, Gandhinagar.","url":"https://dhvanibhesaniya.github.io/shree_nandi_gruhudhyog/","telephone":"+919998714455","email":"shreenandigruhudhyog@gmail.com","image":"https://dhvanibhesaniya.github.io/shree_nandi_gruhudhyog/og-image.jpg","logo":"https://dhvanibhesaniya.github.io/shree_nandi_gruhudhyog/icon-512.png","priceRange":"₹","currenciesAccepted":"INR","address":{"@type":"PostalAddress","streetAddress":"Block A, Ground Floor, Shop No. A-12, PANACHE, Khoraj","addressLocality":"Gandhinagar","addressRegion":"Gujarat","postalCode":"382421","addressCountry":"IN"},"openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],"opens":"09:00","closes":"21:00"}],"hasMap":"https://maps.app.goo.gl/oJNutRSV7BzHWXP68","areaServed":[{"@type":"City","name":"Gandhinagar"},{"@type":"City","name":"Ahmedabad"},{"@type":"State","name":"Gujarat"}],"makesOffer":[{"@type":"Offer","itemOffered":{"@type":"Product","name":"Namkeen & Farsan"}},{"@type":"Offer","itemOffered":{"@type":"Product","name":"Khakhra & Bhakhri"}},{"@type":"Offer","itemOffered":{"@type":"Product","name":"Pickles & Achaar"}},{"@type":"Offer","itemOffered":{"@type":"Product","name":"Bakery & Cookies"}},{"@type":"Offer","itemOffered":{"@type":"Product","name":"Wafers & Chips"}},{"@type":"Offer","itemOffered":{"@type":"Product","name":"Soda Bar"}},{"@type":"Offer","itemOffered":{"@type":"Product","name":"Ice Cream"}}]}</script>
+    <script type="module" crossorigin src="/shree_nandi_gruhudhyog/assets/index--1jL7omp.js"></script>
+    <link rel="modulepreload" crossorigin href="/shree_nandi_gruhudhyog/assets/rolldown-runtime-B0Z9INg1.js">
+    <link rel="modulepreload" crossorigin href="/shree_nandi_gruhudhyog/assets/motion-PMgMGIwd.js">
+    <link rel="modulepreload" crossorigin href="/shree_nandi_gruhudhyog/assets/vendor-B5terFLz.js">
+    <link rel="stylesheet" crossorigin href="/shree_nandi_gruhudhyog/assets/index-BR4vI2lZ.css">
   </head>
   <body>
-    <div id="root"></div>
+    <!--
+      Instant first paint. The previous build gated the entire site behind a
+      hardcoded 2.5s "loading" timer; this is the opposite — inline styles so it
+      renders before any CSS or JS arrives, and React replaces it the moment the
+      app mounts. No artificial delay.
+    -->
+    <div id="root">
+      <div
+        style="
+          position: fixed;
+          inset: 0;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 1.1rem;
+          background: #fdfcfb;
+          font-family: Georgia, serif;
+          color: #3a2d24;
+        "
+      >
+        <img
+          src="/shree_nandi_gruhudhyog/apple-touch-icon.png"
+          alt=""
+          width="64"
+          height="64"
+          style="border-radius: 50%; opacity: 0.9"
+        />
+        <p style="margin: 0; font-size: 1.05rem; letter-spacing: 0.02em; opacity: 0.55">
+          Shree Nandi Gruhudhyog
+        </p>
+      </div>
+    </div>
   </body>
 </html>

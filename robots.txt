@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://dhvanibhesaniya.github.io/shree_nandi_gruhudhyog/sitemap.xml

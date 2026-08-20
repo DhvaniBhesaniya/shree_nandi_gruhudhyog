@@ -1,0 +1,22 @@
+{
+  "name": "Shree Nandi Gruhudhyog",
+  "short_name": "Shree Nandi",
+  "description": "Authentic Gujarati farsan, namkeen, khakhra, bhakhri, pickles, bakery, soda bar and ice cream — homemade specialities plus trusted brands, in Khoraj, Gandhinagar.",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#fdfcfb",
+  "theme_color": "#e8760c",
+  "icons": [
+    {
+      "src": "apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
