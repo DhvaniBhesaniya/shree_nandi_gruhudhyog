@@ -1,126 +1,129 @@
 import { motion } from 'framer-motion'
-import farsanImg from '../assets/my_shop_images/Farsan.jpeg'
-import pickelsImg from '../assets/my_shop_images/Pickels.jpeg'
-import khakhraImg from '../assets/my_shop_images/Khakhra.jpeg'
-import chocolateImg from '../assets/my_shop_images/chocolate_box.jpeg'
-import cornitosImg from '../assets/my_shop_images/Cornitos_chips.jpeg'
-import wafersImg from '../assets/my_shop_images/wafers_and_chocolates.jpeg'
-import sodaImg from '../assets/my_shop_images/soda_dispenser.jpeg'
-import bakeryImg from '../assets/my_shop_images/biscuit_boxes_shelves.jpeg'
+import { ArrowUpRight, MessageCircle } from 'lucide-react'
+import Section, { SectionHeader } from './ui/Section'
+import SmartImage from './ui/SmartImage'
+import Button from './ui/Button'
+import { RevealGroup, RevealItem } from './ui/Reveal'
+import { img } from '../assets/images'
+import { whatsappLink, waMessage } from '../lib/site'
+import { scrollToId } from '../lib/hooks'
+import { ease, scaleIn } from '../lib/motion'
 
 const categories = [
   {
     name: 'Namkeen & Farsan',
-    description: 'Crunchy gathiya, chevdo, sev, and irresistible traditional Gujarati farsan.',
-    image: farsanImg,
+    blurb: 'Gathiya, chevdo, sev and the crunchy Gujarati farsan we make fresh.',
+    picture: img.farsan,
+    feature: true,
   },
-  {
-    name: 'Pickles & Achaar',
-    description: 'Tangy mango, lime, and mixed pickles from trusted brands.',
-    image: pickelsImg,
-  },
-  {
-    name: 'Khakhra & Bhakhri',
-    description: 'Thin, crispy whole wheat khakhra in a dozen flavours — methi, jeera, masala & more.',
-    image: khakhraImg,
-  },
-  {
-    name: 'Chocolates & Sweets',
-    description: 'Strawberry, chocolate, orange wafer rolls and premium confectionery.',
-    image: chocolateImg,
-  },
-  {
-    name: 'Chips & Snacks',
-    description: 'Cornitos nacho crisps, dry samosa, peanuts and crunchy munchies.',
-    image: cornitosImg,
-  },
-  {
-    name: 'Wafers & Biscuits',
-    description: 'Crispy potato wafers, banana chips, and perfectly baked biscuits & khari.',
-    image: wafersImg,
-  },
-  {
-    name: 'Cold Drinks & Soda',
-    description: 'Refreshing sodas in 15+ flavours — jeera masala, limbu, orange, cola & special mixes.',
-    image: sodaImg,
-  },
-  {
-    name: 'Bakery & Cookies',
-    description: 'Premium cookies, cake rusk & biscuits — Cadbury, Good Day, Pure Magic & more.',
-    image: bakeryImg,
-  },
+  { name: 'Khakhra & Bhakhri', blurb: 'Methi, jeera, masala — thin and crisp.', picture: img.khakhra },
+  { name: 'Pickles & Achaar', blurb: 'Mango, lime and mixed, tangy as it should be.', picture: img.pickles },
+  { name: 'Chocolates & Sweets', blurb: 'Wafer rolls and premium confectionery.', picture: img.chocolateBox },
+  { name: 'Chips & Snacks', blurb: 'Cornitos, dry samosa, peanuts and munchies.', picture: img.cornitosChips },
+  { name: 'Wafers & Biscuits', blurb: 'Potato wafers, banana chips, khari and biscuits.', picture: img.wafersAndChocolates },
+  { name: 'Soda & Cold Drinks', blurb: '15+ soda flavours plus chilled bottles.', picture: img.sodaDispenser },
+  { name: 'Bakery & Cookies', blurb: 'Cookies, cake rusk and everyday bakery.', picture: img.biscuitBoxesShelves },
 ]
 
-const containerVariants = {
-  hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
-}
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 60 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
-}
-
+/**
+ * Category grid.
+ *
+ * Overlay cards rather than the previous image-above-a-white-box pattern: the
+ * photography carries the section, and letting type sit on the image is what
+ * separates a considered grid from a stock template. The first card spans two
+ * columns to break the otherwise uniform 4-up rhythm.
+ */
 export default function ProductCategories() {
   return (
-    <section id="products" className="bg-cream py-16 md:py-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.h2
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="font-heading text-3xl sm:text-4xl text-brown text-center font-bold mb-4"
-        >
-          Our Delicious Range
-        </motion.h2>
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-center text-brown-light font-body mb-12 max-w-2xl mx-auto"
-        >
-          From crispy farsan to tangy pickles, explore the authentic taste of Gujarat
-        </motion.p>
+    <Section id="products" tone="canvas" size="lg">
+      <SectionHeader
+        eyebrow="What we stock"
+        title="Everything under one roof"
+        lead="From farsan we fry ourselves to the brands you already trust — over 500 items across the shop."
+      />
 
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
-        >
-          {categories.map((cat) => (
-            <motion.div
-              key={cat.name}
-              variants={itemVariants}
-              whileHover={{ scale: 1.03, y: -4 }}
-              className="rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all group cursor-pointer hover:ring-2 hover:ring-saffron"
-            >
-              <div className="h-52 overflow-hidden">
-                <img
-                  src={cat.image}
-                  alt={cat.name}
-                  loading="lazy"
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                />
-              </div>
-              <div className="bg-white p-5">
-                <h3 className="font-heading text-brown text-xl font-bold mb-1">{cat.name}</h3>
-                <p className="text-gray-600 font-body text-sm mb-3">{cat.description}</p>
-                <a href="#shop-images" className="text-saffron font-body font-semibold text-sm hover:underline block w-max">
-                  View All →
-                </a>
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
+      <RevealGroup
+        each={0.07}
+        className="mt-16 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4"
+      >
+        {categories.map((cat) => (
+          <RevealItem
+            key={cat.name}
+            variants={scaleIn}
+            className={cat.feature ? 'sm:col-span-2' : ''}
+          >
+            <CategoryCard {...cat} />
+          </RevealItem>
+        ))}
+      </RevealGroup>
+
+      {/* Section-level fallback for anything not pictured */}
+      <div className="mt-14 flex flex-col items-center gap-4 rounded-panel border border-line bg-surface p-8 text-center sm:flex-row sm:justify-between sm:text-left">
+        <div>
+          <p className="font-display text-h3 font-semibold text-ink">
+            Looking for something specific?
+          </p>
+          <p className="mt-1.5 font-body text-sm text-ink-soft">
+            Message us and we'll tell you straight away if it's in stock.
+          </p>
+        </div>
+        <Button href={whatsappLink(waMessage.general)} variant="whatsapp" size="lg">
+          <MessageCircle size={18} />
+          Ask on WhatsApp
+        </Button>
       </div>
-    </section>
+    </Section>
+  )
+}
+
+function CategoryCard({ name, blurb, picture, feature }) {
+  return (
+    <motion.button
+      onClick={() => scrollToId('gallery')}
+      whileHover="hover"
+      whileFocus="hover"
+      initial="rest"
+      animate="rest"
+      className="group relative block h-full w-full overflow-hidden rounded-card text-left shadow-soft transition-shadow duration-500 hover:shadow-pop"
+    >
+      <SmartImage
+        picture={picture}
+        alt={name}
+        sizes={feature ? '(max-width: 640px) 92vw, (max-width: 1024px) 92vw, 46vw' : '(max-width: 640px) 92vw, (max-width: 1024px) 46vw, 23vw'}
+        aspect={feature ? 16 / 11 : 4 / 5}
+        imgClassName="transition-transform duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06]"
+      />
+
+      {/* Scrim only where the type sits, so the photo stays bright above it */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 bg-gradient-to-t from-clay-950/88 via-clay-950/25 to-transparent"
+      />
+
+      <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-5">
+        <div className="min-w-0">
+          <h3 className="font-display text-h3 font-semibold text-white">{name}</h3>
+          {/* Description stays out of the way until the card is engaged */}
+          <motion.p
+            variants={{
+              rest: { opacity: 0, height: 0, y: 6 },
+              hover: { opacity: 1, height: 'auto', y: 0 },
+            }}
+            transition={{ duration: 0.4, ease: ease.outExpo }}
+            className="overflow-hidden font-body text-sm text-white/75"
+          >
+            <span className="block pt-1.5">{blurb}</span>
+          </motion.p>
+        </div>
+
+        <motion.span
+          variants={{ rest: { scale: 0.85, opacity: 0.7 }, hover: { scale: 1, opacity: 1 } }}
+          transition={{ duration: 0.35, ease: ease.outExpo }}
+          className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white/15 text-white backdrop-blur-sm"
+        >
+          <ArrowUpRight size={17} />
+        </motion.span>
+      </div>
+    </motion.button>
   )
 }

@@ -1,7 +1,6 @@
-import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import LoadingScreen from './components/LoadingScreen'
+import { MotionConfig } from 'framer-motion'
 import Navbar from './components/Navbar'
+import ScrollProgress from './components/ScrollProgress'
 import Hero from './components/Hero'
 import StatsBanner from './components/StatsBanner'
 import ProductCategories from './components/ProductCategories'
@@ -13,48 +12,48 @@ import AboutUs from './components/AboutUs'
 import VirtualShopTour from './components/VirtualShopTour'
 import Testimonials from './components/Testimonials'
 import Gallery from './components/Gallery'
+import BulkOrders from './components/BulkOrders'
 import ContactSection from './components/ContactSection'
 import Footer from './components/Footer'
-import WhatsAppButton from './components/WhatsAppButton'
+import FloatingActions from './components/FloatingActions'
 
 export default function App() {
-  const [isLoading, setIsLoading] = useState(true)
-
   return (
-    <>
-      <AnimatePresence mode="wait">
-        {isLoading && (
-          <LoadingScreen
-            key="loading"
-            onComplete={() => setIsLoading(false)}
-          />
-        )}
-      </AnimatePresence>
+    /*
+     * reducedMotion="user" makes Framer Motion drop transform and layout
+     * animations for anyone with the OS setting enabled, so no component has to
+     * check for itself. index.css covers the CSS-driven animations Framer can't
+     * see (the brand marquee and floating badges).
+     */
+    <MotionConfig reducedMotion="user">
+      <a
+        href="#products"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-200 focus:rounded-full focus:bg-brand focus:px-5 focus:py-2.5 focus:font-body focus:text-sm focus:font-semibold focus:text-on-brand"
+      >
+        Skip to products
+      </a>
 
-      {!isLoading && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          className="font-body bg-cream text-brown min-h-screen"
-        >
-          <Navbar />
-          <Hero />
-          <StatsBanner />
-          <ProductCategories />
-          <FeaturedProducts />
-          <BrandsMarquee />
-          <BeverageMenu />
-          <WhyChooseUs />
-          <AboutUs />
-          <VirtualShopTour />
-          <Testimonials />
-          <Gallery />
-          <ContactSection />
-          <Footer />
-          <WhatsAppButton />
-        </motion.div>
-      )}
-    </>
+      <ScrollProgress />
+      <Navbar />
+
+      <main>
+        <Hero />
+        <StatsBanner />
+        <ProductCategories />
+        <FeaturedProducts />
+        <BrandsMarquee />
+        <WhyChooseUs />
+        <AboutUs />
+        <VirtualShopTour />
+        <BeverageMenu />
+        <Testimonials />
+        <Gallery />
+        <BulkOrders />
+        <ContactSection />
+      </main>
+
+      <Footer />
+      <FloatingActions />
+    </MotionConfig>
   )
 }

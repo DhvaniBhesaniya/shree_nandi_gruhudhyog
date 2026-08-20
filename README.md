@@ -1,98 +1,107 @@
 # Shree Nandi Gruhudhyog
 
-A modern e‑commerce storefront built with **React** and **Vite**. This starter template provides a fast development experience with hot module replacement, linting, and a clean component architecture.
+Marketing site for **Shree Nandi Gruhudhyog** (શ્રી નંદી ગૃહ ઉદ્યોગ) — a family
+gruhudhyog in Khoraj, Gandhinagar selling homemade Gujarati farsan, khakhra,
+bhakhri and bakery alongside a soda bar, ice cream and 500+ stocked brands.
+
+React 19 · Vite 8 · Tailwind CSS 4 · Framer Motion 12 · deployed to GitHub Pages.
 
 ---
 
-## ✨ Features
-
-- **React 18** with functional components and hooks
-- **Vite** for lightning‑fast dev server and optimized builds
-- ESLint configuration with recommended rules
-- Ready‑to‑customize component library (`Navbar`, `Gallery`, `FeaturedProducts`, etc.)
-- Responsive design foundations
-
----
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-- Node.js (>= 18)
-- npm (comes with Node) or Yarn
-
-### Installation
+## Getting started
 
 ```bash
-# Clone the repository
-git clone https://github.com/yourusername/shree_nandi_gruhudhyog.git
-cd shree_nandi_gruhudhyog
-
-# Install dependencies
 npm install
+npm run dev          # dev server on http://localhost:5173/shree_nandi_gruhudhyog/
 ```
 
-### Development
-
-```bash
-npm run dev
-```
-
-Open `http://localhost:5173` in your browser. The Vite dev server supports hot‑module replacement, so changes reflect instantly.
-
-### Build for Production
-
-```bash
-npm run build
-# Preview the production build
-npm run preview
-```
+| Script            | What it does                                                              |
+| ----------------- | ------------------------------------------------------------------------- |
+| `npm run dev`     | Vite dev server with HMR                                                  |
+| `npm run build`   | Production build into `dist/`                                             |
+| `npm run preview` | Serve the built output locally                                            |
+| `npm run lint`    | ESLint over the whole project                                             |
+| `npm run smoke`   | Render the app once via SSR to catch crashes and invalid props             |
+| `npm run assets`  | Regenerate favicons, the social share card, and blur-up placeholders       |
+| `npm run deploy`  | Build and publish `dist/` to the `gh-pages` branch                        |
 
 ---
 
-## 📦 Project Structure
+## Where things live
 
-```
+```text
 src/
-├─ components/      # Reusable UI components
-│   ├─ Navbar.jsx
-│   ├─ Gallery.jsx
-│   ├─ LoadingScreen.jsx
-│   └─ FeaturedProducts.jsx
-├─ assets/          # Images, icons, etc.
-├─ App.jsx          # Root component
-└─ main.jsx        # Entry point
+├─ assets/
+│  ├─ shop/            # source photos — the only place raw images belong
+│  ├─ images.js        # image registry: responsive AVIF/WebP + blur placeholders
+│  └─ lqip.js          # GENERATED base64 placeholders (npm run assets)
+├─ components/
+│  ├─ ui/              # SmartImage, Reveal, Section, Button, Lightbox
+│  └─ *.jsx            # one file per page section
+├─ lib/
+│  ├─ site.js          # single source of truth for business details
+│  ├─ motion.js        # shared easing curves and reveal variants
+│  ├─ hooks.js         # scroll lock, active section, theme, smooth scroll
+│  └─ hours.js         # open/closed state, evaluated in Asia/Kolkata
+├─ index.css           # design tokens (colour ramps, fluid type, dark mode)
+└─ App.jsx
+scripts/
+├─ seo-plugin.js       # injects meta + JSON-LD, emits robots/sitemap/manifest
+├─ generate-assets.mjs # favicons, OG card, LQIP placeholders
+└─ smoke-render.mjs    # SSR smoke test
 ```
 
 ---
 
-## 🤝 Contributing
+## Things worth knowing before you edit
 
-Contributions are welcome! Please follow these steps:
+**Business details live in one file.** Phone number, address, hours, email and
+maps links are all in [`src/lib/site.js`](src/lib/site.js). The footer, contact
+form, navbar, every WhatsApp link *and* the structured data in `<head>` all read
+from it. Change it once.
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/awesome-feature`)
-3. Commit your changes with clear messages
-4. Open a Pull Request describing the changes
+**Images go through the registry.** Drop a photo into `src/assets/shop/`, run
+`npm run assets` to regenerate its blur placeholder, then reference it as
+`img.yourFileName` (filename kebab-case → camelCase). Never import from
+`assets/shop/` directly — `<SmartImage>` handles responsive sizing, AVIF/WebP
+negotiation and blur-up, and bypassing it means shipping the full-size original.
 
-Make sure to run the linter before submitting:
+**Colours come from semantic tokens, not the raw ramp.** Use `bg-canvas`,
+`text-ink`, `border-line`, `bg-brand` and friends. They flip automatically in
+dark mode, which is why there are almost no `dark:` variants in the components.
+The ramps (`saffron-*`, `clay-*`, `gold-*`) are for cases where a colour must not
+change between themes — text on a photo, for instance.
 
-```bash
-npm run lint
-```
+**Enquiries go to WhatsApp.** There is no backend. The contact form validates and
+then opens `wa.me` with the enquiry pre-written; see `waMessage` in
+`src/lib/site.js`. If you ever add a server, that is the single place to change.
+
+**Motion is centralised.** Easing curves and reveal variants are in
+`src/lib/motion.js` and mirrored as CSS custom properties in `index.css`.
+`<MotionConfig reducedMotion="user">` in `App.jsx` handles
+`prefers-reduced-motion` for everything Framer drives; the CSS animations
+(marquee, pulses) are covered by a media query at the bottom of `index.css`.
+
+**`import.meta.glob` options must be inline literals.** Vite parses them
+statically. Hoisting the imagetools query in `images.js` into a constant makes it
+silently ignored — images still load, but as untransformed full-size originals.
 
 ---
 
-## 📄 License
+## Known gaps
 
-This project is licensed under the **MIT License** – see the [LICENSE](LICENSE) file for details.
+- **`geo` coordinates are missing from the structured data.** Add the real
+  lat/lng from the Google Business listing as `site.geo = { lat, lng }` and the
+  SEO plugin will include it. It is deliberately absent rather than guessed,
+  since a wrong pin is worse than none.
+- **Testimonials and product ratings are placeholder copy**, as are the
+  "10,000+ customers" and "15+ years" figures in the stats band. Replace them
+  with real reviews before relying on them.
+- **Instagram and Facebook URLs are empty** in `site.js`. The footer hides blank
+  entries rather than rendering dead links — fill them in to show the icons.
 
 ---
 
-## 🙏 Acknowledgements
+## Licence
 
-- Vite – Next Generation Frontend Tooling
-- React – A JavaScript library for building user interfaces
-- ESLint – Pluggable linting utility for JavaScript and JSX
-
-Feel free to customize this README further to match your project's branding and requirements.
+MIT — see [LICENSE](LICENSE).

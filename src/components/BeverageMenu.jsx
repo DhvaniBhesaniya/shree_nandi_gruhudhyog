@@ -1,256 +1,247 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import sodaMenuImg from '../assets/my_shop_images/soda_menu_board.jpeg'
-import sodaDispenserImg from '../assets/my_shop_images/soda_dispenser.jpeg'
-import hoccoMenuImg from '../assets/my_shop_images/hocco_icecream_menu.jpeg'
+import { CupSoda, IceCreamCone, MessageCircle } from 'lucide-react'
+import Section, { SectionHeader } from './ui/Section'
+import SmartImage from './ui/SmartImage'
+import Button from './ui/Button'
+import { img } from '../assets/images'
+import { whatsappLink, waMessage } from '../lib/site'
+import { ease, spring } from '../lib/motion'
+
+const sodas = [
+  { name: 'Saadi Soda', gu: 'સાદી સોડા', price: 10, kind: 'Regular' },
+  { name: 'Jeera Masala', gu: 'જીરા મસાલા', price: 15, kind: 'Regular' },
+  { name: 'Orange Soda', gu: 'ઓરેન્જ સોડા', price: 15, kind: 'Regular' },
+  { name: 'Pineapple Soda', gu: 'પાઇનએપલ સોડા', price: 15, kind: 'Regular' },
+  { name: 'Mango Soda', gu: 'મેંગો સોડા', price: 15, kind: 'Regular' },
+  { name: 'Cola Soda', gu: 'કોલા સોડા', price: 15, kind: 'Regular' },
+  { name: 'Fruit Beer', gu: 'ફ્રૂટ બિયર', price: 15, kind: 'Regular' },
+  { name: '7up / Sprite', gu: 'સેવન અપ / સ્પ્રાઇટ', price: 15, kind: 'Regular' },
+  { name: 'Limbu Soda', gu: 'લીંબુ સોડા', price: 20, kind: 'Special' },
+  { name: 'Limbu Sharbat', gu: 'લીંબુ શરબત', price: 25, kind: 'Special' },
+  { name: 'Chaas Soda', gu: 'છાસ સોડા', price: 25, kind: 'Special' },
+  { name: 'Sing Soda', gu: 'સિંગ સોડા', price: 25, kind: 'Special' },
+  { name: 'Pudina Soda', gu: 'પુદીના સોડા', price: 25, kind: 'Special' },
+  { name: 'Pudina Adrak Limbu', gu: 'પુદીના આદુ લીંબુ સોડા', price: 25, kind: 'Special' },
+  { name: 'Phulzar Green Soda', gu: 'ફૂલઝર ગ્રીન સોડા', price: 25, kind: 'Special' },
+  { name: 'Spicy Green Chilli', gu: 'સ્પાઈસી ગ્રીન ચીલી સોડા', price: 25, kind: 'Special' },
+]
+
+const iceCream = [
+  { label: 'Chillo Cones', from: 20 },
+  { label: 'Boss Bars', from: 30 },
+  { label: 'Kulfis', from: 10 },
+  { label: 'Sundae Cups', from: 20 },
+]
 
 const tabs = [
-  { id: 'soda', label: '🥤 Soda Bar', color: 'from-sky-50 via-cyan-50 to-blue-50' },
-  { id: 'icecream', label: '🍦 Ice Cream', color: 'from-pink-50 via-rose-50 to-fuchsia-50' },
+  { id: 'soda', label: 'Soda bar', icon: CupSoda },
+  { id: 'icecream', label: 'Ice cream', icon: IceCreamCone },
 ]
 
-const sodaCategories = ['All', 'Regular Soda', 'Special Flavours & Mix Soda']
-
-const sodaFlavours = [
-  // Regular Soda
-  { name: 'Saadi Soda', nameGuj: 'સાદી સોડા', price: '₹10', category: 'Regular Soda' },
-  { name: 'Jeera Masala', nameGuj: 'જીરા મસાલા', price: '₹15', category: 'Regular Soda' },
-  { name: 'Orange Soda', nameGuj: 'ઓરેન્જ સોડા', price: '₹15', category: 'Regular Soda' },
-  { name: 'Pineapple Soda', nameGuj: 'પાઇનએપલ સોડા', price: '₹15', category: 'Regular Soda' },
-  { name: 'Mango Soda', nameGuj: 'મેંગો સોડા', price: '₹15', category: 'Regular Soda' },
-  { name: 'Cola Soda', nameGuj: 'કોલા સોડા', price: '₹15', category: 'Regular Soda' },
-  { name: 'Fruit Beer', nameGuj: 'ફ્રૂટ બિયર', price: '₹15', category: 'Regular Soda' },
-  { name: '7up / Sprite', nameGuj: 'સેવન અપ / સ્પ્રાઇટ', price: '₹15', category: 'Regular Soda' },
-  // Special Flavours & Mix Soda
-  { name: 'Limbu Soda', nameGuj: 'લીંબુ સોડા', price: '₹20', category: 'Special Flavours & Mix Soda' },
-  { name: 'Limbu Sharbat', nameGuj: 'લીંબુ શરબત', price: '₹25', category: 'Special Flavours & Mix Soda' },
-  { name: 'Chaas Soda', nameGuj: 'છાસ સોડા', price: '₹25', category: 'Special Flavours & Mix Soda' },
-  { name: 'Sing Soda', nameGuj: 'સિંગ સોડા', price: '₹25', category: 'Special Flavours & Mix Soda' },
-  { name: 'Pudina Soda', nameGuj: 'પુદીના સોડા', price: '₹25', category: 'Special Flavours & Mix Soda' },
-  { name: 'Pudina Adrak Limbu Soda', nameGuj: 'પુદીના આદુ લીંબુ સોડા', price: '₹25', category: 'Special Flavours & Mix Soda' },
-  { name: 'Phulzar Green Soda', nameGuj: 'ફૂલઝર ગ્રીન સોડા', price: '₹25', category: 'Special Flavours & Mix Soda' },
-  { name: 'Spicy Green Chilli Soda', nameGuj: 'સ્પાઈસી ગ્રીન ચીલી સોડા', price: '₹25', category: 'Special Flavours & Mix Soda' },
-]
-
-const iceCreamHighlights = [
-  { emoji: '🍦', label: 'Chillo Cones', detail: 'from ₹20' },
-  { emoji: '🍫', label: 'Boss Bars', detail: 'from ₹30' },
-  { emoji: '🍨', label: 'Kulfis', detail: 'from ₹10' },
-  { emoji: '🧁', label: 'Sundae Cups', detail: 'from ₹20' },
-]
-
-function SodaContent() {
-  const [activeSodaCat, setActiveSodaCat] = useState('All')
-
-  const filteredSodas = activeSodaCat === 'All'
-    ? sodaFlavours
-    : sodaFlavours.filter((s) => s.category === activeSodaCat)
-
-  return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-      {/* Soda Menu Board Image */}
-      <motion.div
-        initial={{ opacity: 0, x: -60 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.7 }}
-        className="space-y-4"
-      >
-        <div className="rounded-2xl overflow-hidden shadow-2xl">
-          <img
-            src={sodaMenuImg}
-            alt="Soda menu board with prices"
-            loading="lazy"
-            className="w-full h-auto object-cover"
-          />
-        </div>
-        <div className="rounded-2xl overflow-hidden shadow-xl">
-          <img
-            src={sodaDispenserImg}
-            alt="Chaas Soda dispenser with 8+ flavours"
-            loading="lazy"
-            className="w-full h-48 object-cover"
-          />
-        </div>
-      </motion.div>
-
-      {/* Flavours — with sub-filter tabs */}
-      <motion.div
-        initial={{ opacity: 0, x: 60 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.7 }}
-      >
-        {/* Soda sub-filter tabs */}
-        <div className="flex items-center gap-2 mb-5 flex-wrap">
-          {sodaCategories.map((cat) => {
-            const count = cat === 'All'
-              ? sodaFlavours.length
-              : sodaFlavours.filter(s => s.category === cat).length
-            return (
-              <button
-                key={cat}
-                onClick={() => setActiveSodaCat(cat)}
-                className={`px-4 py-1.5 rounded-full font-body font-semibold text-xs transition-all duration-300 cursor-pointer ${
-                  activeSodaCat === cat
-                    ? 'bg-cyan-600 text-white shadow-md scale-105'
-                    : 'bg-white text-brown hover:bg-cyan-100 hover:text-cyan-700 shadow-sm border border-gray-100'
-                }`}
-              >
-                {cat}
-                <span className="ml-1 opacity-60">({count})</span>
-              </button>
-            )
-          })}
-        </div>
-
-        {/* Flavour Cards */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeSodaCat}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.3 }}
-            className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-[440px] overflow-y-auto pr-1"
-            style={{ scrollbarWidth: 'thin' }}
-          >
-            {filteredSodas.map((flavour, i) => (
-              <motion.div
-                key={flavour.name}
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: i * 0.03 }}
-                className={`flex flex-col items-center justify-center p-3 rounded-xl border text-center transition-all hover:scale-105 hover:shadow-md ${
-                  flavour.category === 'Special Flavours & Mix Soda'
-                    ? 'bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200'
-                    : 'bg-white border-gray-100'
-                }`}
-              >
-                {flavour.category === 'Special Flavours & Mix Soda' && (
-                  <span className="text-[10px] bg-amber-500 text-white px-2 py-0.5 rounded-full font-body font-bold mb-1">⭐ SPECIAL</span>
-                )}
-                <p className="font-body font-semibold text-brown text-sm">{flavour.name}</p>
-                <p className="font-body text-brown-light text-xs mt-0.5">{flavour.nameGuj}</p>
-                <span className="font-heading font-bold text-saffron text-lg mt-0.5">{flavour.price}</span>
-              </motion.div>
-            ))}
-          </motion.div>
-        </AnimatePresence>
-      </motion.div>
-    </div>
-  )
-}
-
-function IceCreamContent() {
-  return (
-    <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
-      {/* Highlight Cards */}
-      <motion.div
-        initial={{ opacity: 0, x: -40 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.7 }}
-        className="lg:col-span-2 grid grid-cols-2 gap-4"
-      >
-        {iceCreamHighlights.map((item, i) => (
-          <motion.div
-            key={item.label}
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.4, delay: 0.1 + i * 0.1 }}
-            whileHover={{ scale: 1.05, y: -4 }}
-            className="bg-white rounded-2xl p-5 shadow-md text-center border border-pink-100 hover:shadow-xl transition-all cursor-default"
-          >
-            <span className="text-4xl block mb-2">{item.emoji}</span>
-            <h3 className="font-heading font-bold text-brown text-base">{item.label}</h3>
-            <p className="font-body text-pink-600 text-sm font-semibold mt-1">{item.detail}</p>
-          </motion.div>
-        ))}
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.5 }}
-          className="col-span-2 bg-gradient-to-r from-pink-500 to-rose-500 rounded-2xl p-5 text-center text-white"
-        >
-          <p className="font-heading font-bold text-lg">Summer Special ☀️</p>
-          <p className="font-body text-sm text-pink-100 mt-1">
-            Mango Dolly, Kesar Falooda & Strawberry Cheesecake — try today!
-          </p>
-        </motion.div>
-      </motion.div>
-
-      {/* Hocco Menu Image */}
-      <motion.div
-        initial={{ opacity: 0, x: 40 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.7, delay: 0.2 }}
-        className="lg:col-span-3 rounded-2xl overflow-hidden shadow-2xl"
-      >
-        <img
-          src={hoccoMenuImg}
-          alt="Hocco Ice Cream full menu with prices — cones, bars, kulfis, sundaes"
-          loading="lazy"
-          className="w-full h-auto object-cover"
-        />
-      </motion.div>
-    </div>
-  )
-}
-
+/**
+ * Soda bar + ice cream menu.
+ *
+ * Prices come straight off the boards in the shop, so the photos of those
+ * boards sit alongside as the source of truth. Gujarati names are marked
+ * `lang="gu"` so they render in the Gujarati serif rather than a fallback.
+ */
 export default function BeverageMenu() {
-  const [activeTab, setActiveTab] = useState('soda')
-  const currentTab = tabs.find((t) => t.id === activeTab)
+  const [tab, setTab] = useState('soda')
 
   return (
-    <section className={`bg-gradient-to-br ${currentTab.color} py-16 md:py-20 overflow-hidden transition-all duration-500`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-8"
-        >
-          <span className="inline-block bg-white/60 backdrop-blur-sm text-brown font-body font-semibold text-sm px-4 py-1.5 rounded-full mb-4">
-            🧊 Refreshments & Desserts
-          </span>
-          <h2 className="font-heading text-3xl sm:text-4xl text-brown font-bold mb-3">
-            Our Beverage Menu
-          </h2>
-          <p className="text-brown-light font-body max-w-xl mx-auto">
-            From refreshing ice-cold sodas to rich Hocco ice cream — satisfy every craving!
-          </p>
-        </motion.div>
+    <Section id="beverages" tone="alt" size="lg">
+      <SectionHeader
+        eyebrow="At the counter"
+        title="Cold drinks, made to order"
+        lead="Sixteen soda flavours mixed fresh at the counter, and Hocco ice cream in the freezer beside it."
+      />
 
-        {/* Main Tab Switcher */}
-        <div className="flex items-center justify-center gap-3 mb-10">
-          {tabs.map((tab) => (
+      {/* Tab switcher */}
+      <div className="mt-12 flex justify-center">
+        <div
+          role="tablist"
+          aria-label="Beverage menu"
+          className="inline-flex gap-1 rounded-full border border-line bg-canvas p-1.5 shadow-soft"
+        >
+          {tabs.map(({ id, label, icon: Icon }) => (
             <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`px-6 py-2.5 rounded-full font-body font-bold text-sm sm:text-base transition-all duration-300 cursor-pointer ${
-                activeTab === tab.id
-                  ? 'bg-brown text-cream shadow-lg scale-105 ring-2 ring-brown/20'
-                  : 'bg-white/70 text-brown hover:bg-white hover:shadow-md shadow-sm'
+              key={id}
+              role="tab"
+              aria-selected={tab === id}
+              aria-controls={`panel-${id}`}
+              onClick={() => setTab(id)}
+              className={`relative flex items-center gap-2 rounded-full px-5 py-2.5 font-body text-sm font-semibold transition-colors duration-300 ${
+                tab === id ? 'text-on-brand' : 'text-ink-soft hover:text-ink'
               }`}
             >
-              {tab.label}
+              {tab === id && (
+                <motion.span
+                  layoutId="bev-tab"
+                  transition={spring.soft}
+                  className="absolute inset-0 -z-10 rounded-full bg-brand"
+                />
+              )}
+              <Icon size={16} />
+              {label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={tab}
+          id={`panel-${tab}`}
+          role="tabpanel"
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -12 }}
+          transition={{ duration: 0.35, ease: ease.outExpo }}
+          className="mt-12"
+        >
+          {tab === 'soda' ? <SodaPanel /> : <IceCreamPanel />}
+        </motion.div>
+      </AnimatePresence>
+    </Section>
+  )
+}
+
+function SodaPanel() {
+  const [kind, setKind] = useState('All')
+  const kinds = ['All', 'Regular', 'Special']
+  const list = kind === 'All' ? sodas : sodas.filter((s) => s.kind === kind)
+
+  return (
+    <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
+      {/* Menu board photos */}
+      <div className="space-y-4 lg:col-span-5">
+        <figure className="overflow-hidden rounded-panel border border-line shadow-lift">
+          <SmartImage
+            picture={img.sodaMenuBoard}
+            alt="The soda menu board in the shop, listing every flavour and price"
+            sizes="(max-width: 1024px) 92vw, 38vw"
+          />
+        </figure>
+        <figure className="overflow-hidden rounded-card border border-line shadow-soft">
+          <SmartImage
+            picture={img.sodaDispenser}
+            alt="The soda dispenser at the counter"
+            sizes="(max-width: 1024px) 92vw, 38vw"
+            aspect={16 / 10}
+          />
+        </figure>
+      </div>
+
+      {/* Price list */}
+      <div className="lg:col-span-7">
+        <div className="mb-5 flex flex-wrap gap-2">
+          {kinds.map((k) => (
+            <button
+              key={k}
+              onClick={() => setKind(k)}
+              className={`rounded-full px-4 py-2 font-body text-xs font-semibold transition-colors duration-300 ${
+                kind === k
+                  ? 'bg-ink text-canvas'
+                  : 'border border-line bg-canvas text-ink-soft hover:text-ink'
+              }`}
+            >
+              {k}
+              <span className="ml-1.5 opacity-60">
+                {k === 'All' ? sodas.length : sodas.filter((s) => s.kind === k).length}
+              </span>
             </button>
           ))}
         </div>
 
-        {/* Tab Content */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeTab}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.4 }}
-          >
-            {activeTab === 'soda' ? <SodaContent /> : <IceCreamContent />}
-          </motion.div>
-        </AnimatePresence>
+        <motion.ul
+          layout
+          className="overflow-hidden rounded-panel border border-line bg-canvas"
+        >
+          <AnimatePresence initial={false}>
+            {list.map((s, i) => (
+              <motion.li
+                key={s.name}
+                layout
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.22, delay: i * 0.015 }}
+                className="group flex items-baseline gap-3 border-b border-line px-5 py-3.5 last:border-b-0 hover:bg-surface"
+              >
+                <span className="font-body text-sm font-medium text-ink">{s.name}</span>
+                <span lang="gu" className="font-body text-xs text-ink-faint">
+                  {s.gu}
+                </span>
+                {/* Leader dots — a menu convention, and it keeps the eye on the
+                    right row across a wide column. */}
+                <span
+                  aria-hidden="true"
+                  className="mx-1 min-w-4 flex-1 translate-y-[-0.2em] border-b border-dotted border-line-strong"
+                />
+                {s.kind === 'Special' && (
+                  <span className="rounded-full bg-brand-tint px-2 py-0.5 font-body text-[0.6rem] font-semibold uppercase tracking-wide text-brand">
+                    Special
+                  </span>
+                )}
+                <span className="font-body text-sm font-semibold tabular-nums text-ink">
+                  ₹{s.price}
+                </span>
+              </motion.li>
+            ))}
+          </AnimatePresence>
+        </motion.ul>
       </div>
-    </section>
+    </div>
+  )
+}
+
+function IceCreamPanel() {
+  return (
+    <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
+      <div className="lg:col-span-5">
+        <div className="grid grid-cols-2 gap-4">
+          {iceCream.map((item) => (
+            <motion.div
+              key={item.label}
+              whileHover={{ y: -4 }}
+              transition={spring.soft}
+              className="rounded-card border border-line bg-canvas p-5 text-center shadow-soft"
+            >
+              <p className="font-display text-h3 font-semibold text-ink">{item.label}</p>
+              <p className="mt-1 font-body text-sm text-ink-faint">from ₹{item.from}</p>
+            </motion.div>
+          ))}
+        </div>
+
+        <div className="mt-4 rounded-card border border-line bg-brand-tint p-6">
+          <p className="eyebrow text-brand">Ask for today's</p>
+          <p className="mt-2 font-display text-h3 font-semibold text-ink">
+            Mango Dolly, Kesar Falooda & Strawberry Cheesecake
+          </p>
+          <p className="mt-2 font-body text-sm text-ink-soft">
+            Fifty-plus Hocco flavours in the freezer — cones, bars, kulfis, sundaes and
+            scooperstar cups.
+          </p>
+          <Button
+            href={whatsappLink(waMessage.category('Hocco ice cream'))}
+            variant="whatsapp"
+            size="sm"
+            className="mt-5"
+          >
+            <MessageCircle size={15} />
+            Check availability
+          </Button>
+        </div>
+      </div>
+
+      <figure className="overflow-hidden rounded-panel border border-line shadow-lift lg:col-span-7">
+        <SmartImage
+          picture={img.hoccoIcecreamMenu}
+          alt="The full Hocco ice cream menu with prices — cones, bars, kulfis and sundaes"
+          sizes="(max-width: 1024px) 92vw, 54vw"
+        />
+      </figure>
+    </div>
   )
 }

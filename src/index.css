@@ -1,19 +1,306 @@
 @import "tailwindcss";
 
-/* Prevent horizontal overflow from off-screen framer-motion animations */
-html,
-body {
-  overflow-x: hidden;
+/* Manual theme switching — the toggle writes `class="dark"` onto <html>, and
+   main.jsx seeds it from localStorage/prefers-color-scheme before first paint. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ============================================================================
+   PRIMITIVES — the raw palette, type and motion vocabulary.
+   Ramps are in oklch so lightness steps are perceptually even, which keeps
+   hover/active states consistent instead of some feeling like bigger jumps.
+   ========================================================================= */
+@theme {
+  /* Saffron / marigold — the brand hue */
+  --color-saffron-50:  oklch(0.976 0.014 65);
+  --color-saffron-100: oklch(0.952 0.032 68);
+  --color-saffron-200: oklch(0.905 0.065 66);
+  --color-saffron-300: oklch(0.845 0.105 62);
+  --color-saffron-400: oklch(0.775 0.155 55);
+  --color-saffron-500: oklch(0.712 0.185 48);
+  --color-saffron-600: oklch(0.648 0.192 42);
+  --color-saffron-700: oklch(0.555 0.172 39);
+  --color-saffron-800: oklch(0.468 0.142 38);
+  --color-saffron-900: oklch(0.398 0.115 39);
+  --color-saffron-950: oklch(0.268 0.078 40);
+
+  /* Clay — warm brown-neutral. Used for text and surfaces so nothing on the
+     page is ever a cold grey, which would fight the food photography. */
+  --color-clay-50:  oklch(0.985 0.006 70);
+  --color-clay-100: oklch(0.967 0.011 72);
+  --color-clay-200: oklch(0.928 0.017 72);
+  --color-clay-300: oklch(0.868 0.023 70);
+  --color-clay-400: oklch(0.735 0.030 65);
+  --color-clay-500: oklch(0.612 0.035 60);
+  --color-clay-600: oklch(0.512 0.038 55);
+  --color-clay-700: oklch(0.428 0.042 50);
+  --color-clay-800: oklch(0.352 0.043 46);
+  --color-clay-900: oklch(0.285 0.040 44);
+  --color-clay-950: oklch(0.196 0.032 42);
+
+  /* Turmeric — secondary accent, for highlights on dark grounds */
+  --color-gold-300: oklch(0.902 0.105 92);
+  --color-gold-400: oklch(0.855 0.135 88);
+  --color-gold-500: oklch(0.800 0.145 85);
+  --color-gold-600: oklch(0.720 0.140 80);
+
+  /* Leaf — WhatsApp / success / "no preservatives" */
+  --color-leaf-400: oklch(0.700 0.120 155);
+  --color-leaf-500: oklch(0.598 0.128 155);
+  --color-leaf-600: oklch(0.520 0.115 155);
+
+  /* Chilli — bestseller badges, spice indicators */
+  --color-chilli-500: oklch(0.585 0.205 25);
+  --color-chilli-600: oklch(0.525 0.198 25);
+
+  /* --- Type ------------------------------------------------------------- */
+  /* Fraunces is a variable serif with optical-size and "soft" axes — warmer and
+     far less generic than the Playfair default it replaces. */
+  --font-display: "Fraunces", "Playfair Display", Georgia, serif;
+  --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+  /* The site mixes Gujarati into English copy; without this the script falls
+     back to whatever the OS picks and the two never sit right together. */
+  --font-guj: "Noto Serif Gujarati", "Noto Sans Gujarati", var(--font-display);
+
+  /* Fluid scale — no breakpoint jumps, headings track the viewport */
+  --text-display: clamp(2.75rem, 1.6rem + 5.2vw, 6rem);
+  --text-display--line-height: 0.98;
+  --text-display--letter-spacing: -0.03em;
+  --text-h1: clamp(2.25rem, 1.5rem + 3.2vw, 4rem);
+  --text-h1--line-height: 1.05;
+  --text-h1--letter-spacing: -0.025em;
+  --text-h2: clamp(1.75rem, 1.3rem + 1.8vw, 2.75rem);
+  --text-h2--line-height: 1.12;
+  --text-h2--letter-spacing: -0.02em;
+  --text-h3: clamp(1.2rem, 1.05rem + 0.6vw, 1.5rem);
+  --text-h3--line-height: 1.25;
+  --text-h3--letter-spacing: -0.01em;
+  --text-lead: clamp(1.05rem, 0.98rem + 0.4vw, 1.3rem);
+  --text-lead--line-height: 1.6;
+  --text-eyebrow: 0.75rem;
+  --text-eyebrow--line-height: 1;
+  --text-eyebrow--letter-spacing: 0.14em;
+
+  /* --- Motion ----------------------------------------------------------- */
+  /* One expressive curve used everywhere beats a dozen ad-hoc `easeOut`s —
+     it's what makes separate animations read as one system. */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+  --ease-back: cubic-bezier(0.34, 1.32, 0.64, 1);
+
+  --animate-marquee: marquee 42s linear infinite;
+  --animate-marquee-slow: marquee 68s linear infinite;
+  --animate-shimmer: shimmer 2.4s var(--ease-in-out-quart) infinite;
+  --animate-float: float 6s ease-in-out infinite;
+
+  /* --- Form ------------------------------------------------------------- */
+  --radius-card: 1.25rem;
+  --radius-panel: 1.75rem;
+
+  /* Warm-tinted shadows. Neutral black shadows over cream read as dirty. */
+  --shadow-soft: 0 1px 2px oklch(0.30 0.04 45 / 0.04), 0 4px 12px oklch(0.30 0.04 45 / 0.05);
+  --shadow-lift: 0 2px 4px oklch(0.30 0.04 45 / 0.05), 0 12px 28px oklch(0.30 0.04 45 / 0.09);
+  --shadow-pop: 0 4px 8px oklch(0.30 0.04 45 / 0.06), 0 24px 56px oklch(0.30 0.04 45 / 0.14);
 }
 
-@theme {
-  --color-saffron: #FF6B00;
-  --color-cream: #FFF8F0;
-  --color-brown: #4A2C0A;
-  --color-brown-light: #7A4520;
-  --color-gold: #F5C842;
-  --color-green: #2D6A4F;
+@keyframes marquee {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-50%, 0, 0); }
+}
+@keyframes shimmer {
+  0%, 100% { opacity: 0.4; }
+  50%      { opacity: 1; }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
+}
 
-  --font-heading: "Playfair Display", serif;
-  --font-body: "Inter", sans-serif;
+/* ============================================================================
+   SEMANTIC TOKENS
+   Components reference these, never the raw ramp, so light/dark is handled in
+   one place instead of scattering `dark:` variants through every file.
+   `@theme inline` makes Tailwind emit var() references rather than copying the
+   values, which is what lets the .dark overrides below actually take effect.
+   ========================================================================= */
+@theme inline {
+  --color-canvas: var(--sng-canvas);
+  --color-surface: var(--sng-surface);
+  --color-surface-alt: var(--sng-surface-alt);
+  --color-inverse: var(--sng-inverse);
+  --color-ink: var(--sng-ink);
+  --color-ink-soft: var(--sng-ink-soft);
+  --color-ink-faint: var(--sng-ink-faint);
+  --color-ink-inverse: var(--sng-ink-inverse);
+  --color-line: var(--sng-line);
+  --color-line-strong: var(--sng-line-strong);
+  --color-brand: var(--sng-brand);
+  --color-brand-hover: var(--sng-brand-hover);
+  --color-brand-tint: var(--sng-brand-tint);
+  --color-on-brand: var(--sng-on-brand);
+}
+
+:root {
+  color-scheme: light;
+  --sng-canvas: var(--color-clay-50);
+  --sng-surface: #fff;
+  --sng-surface-alt: var(--color-clay-100);
+  --sng-inverse: var(--color-clay-950);
+  --sng-ink: var(--color-clay-900);
+  --sng-ink-soft: var(--color-clay-600);
+  --sng-ink-faint: var(--color-clay-500);
+  --sng-ink-inverse: var(--color-clay-50);
+  --sng-line: var(--color-clay-200);
+  --sng-line-strong: var(--color-clay-300);
+  --sng-brand: var(--color-saffron-600);
+  --sng-brand-hover: var(--color-saffron-700);
+  --sng-brand-tint: var(--color-saffron-50);
+  --sng-on-brand: #fff;
+
+  --nav-h: 4.5rem;
+}
+
+.dark {
+  color-scheme: dark;
+  /* Warm near-blacks, not neutral greys — a cold dark mode makes the food
+     photography look grey and unappetising. */
+  --sng-canvas: oklch(0.168 0.018 45);
+  --sng-surface: oklch(0.216 0.021 45);
+  --sng-surface-alt: oklch(0.262 0.023 45);
+  --sng-inverse: oklch(0.128 0.014 45);
+  --sng-ink: oklch(0.948 0.010 70);
+  --sng-ink-soft: oklch(0.762 0.020 65);
+  --sng-ink-faint: oklch(0.640 0.024 60);
+  --sng-ink-inverse: var(--color-clay-950);
+  --sng-line: oklch(0.318 0.022 45);
+  --sng-line-strong: oklch(0.402 0.026 45);
+  /* Lifted so it keeps AA contrast against the dark canvas */
+  --sng-brand: var(--color-saffron-400);
+  --sng-brand-hover: var(--color-saffron-300);
+  --sng-brand-tint: oklch(0.282 0.048 45);
+  --sng-on-brand: oklch(0.196 0.032 42);
+}
+
+/* ============================================================================
+   BASE
+   ========================================================================= */
+@layer base {
+  html {
+    /* Off — the Navbar drives scrolling through framer-motion's animate()
+       instead, so it can respect reduced-motion and land below the fixed bar. */
+    scroll-behavior: auto;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    /* Slightly tighter than default for the dense product copy */
+    letter-spacing: -0.006em;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Off-screen reveal animations would otherwise create a horizontal scrollbar */
+  html, body { overflow-x: clip; }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    font-optical-sizing: auto;
+    /* Fraunces axes: a little "wonk" and softness reads handmade rather than
+       corporate, which is the whole point for a gruhudhyog brand. */
+    font-variation-settings: "SOFT" 40, "WONK" 1;
+    text-wrap: balance;
+  }
+
+  p { text-wrap: pretty; }
+
+  /* Anchor targets must clear the fixed navbar */
+  :where(section, div)[id] { scroll-margin-top: calc(var(--nav-h) + 1.5rem); }
+
+  /* A real focus ring — there was none before, making the site unusable
+     by keyboard. Only shows for keyboard users, never on mouse click. */
+  :focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background-color: var(--color-saffron-500);
+    color: #fff;
+  }
+
+  /* Gujarati text sits noticeably smaller than Latin at the same px size */
+  [lang="gu"] {
+    font-family: var(--font-guj);
+    font-size: 1.06em;
+  }
+
+  img { color: transparent; } /* hides alt-text flash while decoding */
+}
+
+/* ============================================================================
+   UTILITIES
+   ========================================================================= */
+@utility grain {
+  position: relative;
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.035;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+}
+
+@utility text-gradient {
+  background-image: linear-gradient(
+    100deg,
+    var(--color-saffron-500),
+    var(--color-gold-400) 45%,
+    var(--color-saffron-600)
+  );
+  background-clip: text;
+  color: transparent;
+  /* Descenders get clipped by background-clip:text without this */
+  padding-block: 0.08em;
+}
+
+@utility eyebrow {
+  font-family: var(--font-body);
+  font-size: var(--text-eyebrow);
+  letter-spacing: var(--text-eyebrow--letter-spacing);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* Horizontal scrollers: hide the bar but keep the scrolling */
+@utility no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar { display: none; }
+}
+
+/* Fades the edge of a horizontal scroller so cards look like they continue */
+@utility mask-edges {
+  mask-image: linear-gradient(to right, transparent, #000 4%, #000 96%, transparent);
+}
+
+/* ============================================================================
+   REDUCED MOTION
+   Framer Motion handles its own via <MotionConfig reducedMotion="user">; this
+   covers the CSS-driven animations (marquee, float, shimmer) it can't see.
+   ========================================================================= */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .marquee-track { transform: none !important; }
 }

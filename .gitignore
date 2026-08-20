@@ -165,3 +165,6 @@ package-lock.json
 *.njsproj
 *.sln
 *.sw?
+
+# Build output (deployed to gh-pages branch via `npm run deploy`)
+/dist

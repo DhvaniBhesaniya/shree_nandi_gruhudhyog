@@ -1,103 +1,111 @@
 import { motion } from 'framer-motion'
-import { Star } from 'lucide-react'
-import farsanImg from '../assets/my_shop_images/Farsan.jpeg'
-import springNamkeenImg from '../assets/my_shop_images/Spring_namkeen.jpeg'
-import khakhraImg from '../assets/my_shop_images/Khakhra.jpeg'
-import coinKhakhraImg from '../assets/my_shop_images/coin_khakhra_and_bhakhari.jpeg'
-import farsan2Img from '../assets/my_shop_images/farsan_2.jpeg'
-import pickelsImg from '../assets/my_shop_images/Pickels.jpeg'
-import wafersImg from '../assets/my_shop_images/wafers_and_chocolates.jpeg'
-import chocolateImg from '../assets/my_shop_images/chocolate_box.jpeg'
-import homemadeImg from '../assets/my_shop_images/farsan&khari.jpeg'
+import { Star, MessageCircle } from 'lucide-react'
+import Section, { SectionHeader } from './ui/Section'
+import SmartImage from './ui/SmartImage'
+import { RevealGroup, RevealItem } from './ui/Reveal'
+import { img } from '../assets/images'
+import { whatsappLink, waMessage } from '../lib/site'
+import { ease, spring } from '../lib/motion'
 
 const products = [
-  { name: 'Masala Gathiya', desc: 'Crispy spiced chickpea flour gathiya — our best seller', rating: 4.9, badge: '🔥 Bestseller', image: farsan2Img },
-  { name: 'Spring Namkeen', desc: 'Schezwan, beetroot & samosa puri — flavoured crunchy rings', rating: 4.8, badge: '🔥 Bestseller', image: springNamkeenImg },
-  { name: 'Homemade Chakri & Khari', desc: 'Our own brand — freshly made wheat chakri, cookies & khari pastries', rating: 5.0, badge: '⭐ House Special', image: homemadeImg },
-  { name: 'Khakhra', desc: 'Thin crispy fenugreek-flavoured whole wheat khakhra', rating: 4.7, badge: null, image: khakhraImg },
-  { name: 'Bhakhri', desc: 'Coin khakhra & farali bhakhri for fasting days', rating: 4.8, badge: '🔥 Bestseller', image: coinKhakhraImg },
-  { name: 'Chevdo Mix', desc: 'Crunchy mixed chevdo, gathiya, sev & dal mix', rating: 4.6, badge: null, image: farsanImg },
-  { name: 'Pickles', desc: 'Tangy mango, lime & mixed pickles from trusted brands', rating: 4.9, badge: null, image: pickelsImg },
-  { name: 'Chocolate Wafer Rolls', desc: 'Strawberry, chocolate & orange flavour wafer rolls', rating: 4.8, badge: '🔥 Bestseller', image: chocolateImg },
+  { name: 'Masala Gathiya', desc: 'Crispy spiced chickpea-flour gathiya — our best seller', rating: 4.9, badge: 'Bestseller', picture: img.farsan2 },
+  { name: 'Spring Namkeen', desc: 'Schezwan, beetroot & samosa puri — flavoured crunchy rings', rating: 4.8, badge: 'Bestseller', picture: img.springNamkeen },
+  { name: 'Homemade Chakri & Khari', desc: 'Our own brand — freshly made wheat chakri, cookies & khari', rating: 5.0, badge: 'House special', picture: img.farsanKhari },
+  { name: 'Khakhra', desc: 'Thin, crisp fenugreek-flavoured whole wheat khakhra', rating: 4.7, badge: null, picture: img.khakhra },
+  { name: 'Farali Bhakhri', desc: 'Coin khakhra & farali bhakhri for fasting days', rating: 4.8, badge: 'Bestseller', picture: img.coinKhakhraAndBhakhari },
+  { name: 'Chevdo Mix', desc: 'Crunchy mixed chevdo, gathiya, sev & dal mix', rating: 4.6, badge: null, picture: img.farsan },
+  { name: 'Pickles & Achaar', desc: 'Tangy mango, lime & mixed pickles from trusted brands', rating: 4.9, badge: null, picture: img.pickles },
+  { name: 'Chocolate Wafer Rolls', desc: 'Strawberry, chocolate & orange flavour wafer rolls', rating: 4.8, badge: 'Bestseller', picture: img.chocolateBox },
 ]
 
-const containerVariants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.08 } },
-}
-
+/**
+ * Customer favourites.
+ *
+ * Light surface cards here, deliberately contrasting with the photo-overlay
+ * cards in the category grid above — two different card treatments is what stops
+ * the page reading as the same component repeated eight times.
+ *
+ * Each "Enquire" now opens WhatsApp pre-filled with the product name. Before,
+ * all eight of these buttons had no onClick at all and did nothing when tapped.
+ */
 export default function FeaturedProducts() {
   return (
-    <section className="bg-white py-16 md:py-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.h2
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="font-heading text-3xl sm:text-4xl text-brown text-center font-bold mb-4"
-        >
-          Customer Favourites ⭐
-        </motion.h2>
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-center text-brown-light font-body mb-12 max-w-2xl mx-auto"
-        >
-          Loved by thousands — these are our most popular picks
-        </motion.p>
+    <Section tone="surface" size="lg">
+      <SectionHeader
+        eyebrow="Customer favourites"
+        title="The ones people come back for"
+        lead="Tap any item to ask about today's price and availability on WhatsApp."
+      />
 
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
-        >
-          {products.map((p, i) => (
-            <motion.div
-              key={p.name}
-              variants={{
-                hidden: { opacity: 0, x: i % 2 === 0 ? -40 : 40 },
-                visible: { opacity: 1, x: 0, transition: { duration: 0.5 } },
-              }}
-              whileHover={{ scale: 1.03, y: -4 }}
-              className="rounded-2xl bg-cream shadow-md hover:shadow-xl transition-all group cursor-pointer relative overflow-hidden"
-            >
-              {p.badge && (
-                <span className="absolute top-3 left-3 bg-red-500 text-white text-xs rounded-full px-2 py-1 font-body font-semibold z-10">
-                  {p.badge}
-                </span>
-              )}
-              <div className="h-48 overflow-hidden">
-                <img
-                  src={p.image}
-                  alt={p.name}
-                  loading="lazy"
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                />
-              </div>
-              <div className="p-4">
-                <h3 className="font-heading text-brown text-lg font-bold mb-1">{p.name}</h3>
-                <p className="text-gray-600 font-body text-sm mb-2">{p.desc}</p>
-                <div className="flex items-center gap-1 mb-3">
-                  <Star size={16} className="fill-gold text-gold" />
-                  <span className="font-body text-sm font-semibold text-brown">{p.rating}</span>
-                </div>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.97 }}
-                  className="w-full bg-saffron text-white rounded-xl py-2 font-body font-semibold text-sm hover:bg-orange-600 transition-colors duration-300"
-                >
-                  Enquire Now
-                </motion.button>
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
+      <RevealGroup
+        each={0.06}
+        className="mt-16 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4"
+      >
+        {products.map((p) => (
+          <RevealItem key={p.name}>
+            <ProductCard {...p} />
+          </RevealItem>
+        ))}
+      </RevealGroup>
+    </Section>
+  )
+}
+
+function ProductCard({ name, desc, rating, badge, picture }) {
+  return (
+    <motion.article
+      whileHover="hover"
+      initial="rest"
+      animate="rest"
+      variants={{ rest: { y: 0 }, hover: { y: -6 } }}
+      transition={spring.soft}
+      className="group flex h-full flex-col overflow-hidden rounded-card border border-line bg-canvas shadow-soft transition-shadow duration-500 hover:shadow-lift"
+    >
+      <div className="relative">
+        <SmartImage
+          picture={picture}
+          alt={name}
+          sizes="(max-width: 640px) 92vw, (max-width: 1024px) 46vw, 23vw"
+          aspect={4 / 3}
+          imgClassName="transition-transform duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105"
+        />
+        {badge && (
+          <span
+            className={`absolute left-3 top-3 rounded-full px-2.5 py-1 font-body text-[0.68rem] font-semibold uppercase tracking-wider backdrop-blur-sm ${
+              badge === 'House special'
+                ? 'bg-gold-400/95 text-clay-900'
+                : 'bg-chilli-500/95 text-white'
+            }`}
+          >
+            {badge}
+          </span>
+        )}
       </div>
-    </section>
+
+      <div className="flex flex-1 flex-col p-5">
+        <div className="flex items-start justify-between gap-3">
+          <h3 className="font-display text-h3 font-semibold text-ink">{name}</h3>
+          <span className="mt-0.5 flex shrink-0 items-center gap-1 font-body text-xs font-semibold text-ink-soft">
+            <Star size={13} className="fill-gold-500 text-gold-500" />
+            {rating.toFixed(1)}
+          </span>
+        </div>
+
+        <p className="mt-2 flex-1 font-body text-sm leading-relaxed text-ink-soft">{desc}</p>
+
+        <motion.a
+          href={whatsappLink(waMessage.product(name))}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`Enquire about ${name} on WhatsApp`}
+          whileTap={{ scale: 0.97 }}
+          transition={{ duration: 0.3, ease: ease.outExpo }}
+          className="mt-5 inline-flex items-center justify-center gap-2 rounded-full border border-line-strong py-2.5 font-body text-sm font-semibold text-ink transition-colors duration-300 hover:border-leaf-500 hover:bg-leaf-500 hover:text-white"
+        >
+          <MessageCircle size={15} />
+          Enquire
+        </motion.a>
+      </div>
+    </motion.article>
   )
 }

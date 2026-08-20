@@ -1,72 +1,72 @@
-import { motion } from 'framer-motion'
-import { Home, Leaf, Truck, BadgeDollarSign } from 'lucide-react'
+import { Home, Leaf, Truck, BadgeIndianRupee } from 'lucide-react'
+import Section, { SectionHeader } from './ui/Section'
+import { RevealGroup, RevealItem } from './ui/Reveal'
 
 const features = [
-  { icon: Home, title: 'Homemade Quality', description: 'Every product is handcrafted in our kitchen using traditional recipes passed down through generations.', emoji: '🏠' },
-  { icon: Leaf, title: 'No Preservatives', description: 'Pure, natural ingredients only. No artificial colours, flavours or preservatives — ever.', emoji: '🌿' },
-  { icon: Truck, title: 'Pan India Delivery', description: 'We deliver fresh products across India. From Gujarat to your doorstep, anywhere in the country.', emoji: '🚚' },
-  { icon: BadgeDollarSign, title: 'Best Prices', description: 'Premium quality at honest prices. Direct from our kitchen to your table, no middlemen involved.', emoji: '💰' },
+  {
+    icon: Home,
+    title: 'Made in our own kitchen',
+    body: 'The chakri, khari, cookies and farsan under our own label are made here, in small batches, to recipes the family has used for years.',
+  },
+  {
+    icon: Leaf,
+    title: 'Nothing artificial',
+    body: 'No added colours, no artificial flavours, no preservatives in anything we make ourselves — which is also why it does not sit on the shelf for months.',
+  },
+  {
+    icon: Truck,
+    title: 'Delivery across India',
+    body: 'Packed to travel and shipped anywhere in the country. Tell us where you are on WhatsApp and we will confirm the courier cost.',
+  },
+  {
+    icon: BadgeIndianRupee,
+    title: 'Honest shop prices',
+    body: 'The same rates you would pay standing at the counter, with bulk and wholesale pricing for larger orders.',
+  },
 ]
 
-const containerVariants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.1 } },
-}
-
-const itemVariants = {
-  hidden: { opacity: 0, scale: 0.8 },
-  visible: { opacity: 1, scale: 1, transition: { duration: 0.5 } },
-}
-
+/**
+ * Why-us section.
+ *
+ * Presented as a divided editorial grid rather than four floating white cards.
+ * Dropping the card chrome and leaning on hairlines and a large index numeral
+ * makes it read as considered copy instead of a feature-comparison table.
+ */
 export default function WhyChooseUs() {
   return (
-    <section className="bg-gradient-to-br from-cream to-orange-50 py-16 md:py-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.h2
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="font-heading text-3xl sm:text-4xl text-brown text-center font-bold mb-4"
-        >
-          Why Families Love Shree Nandi
-        </motion.h2>
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-center text-brown-light font-body mb-12 max-w-2xl mx-auto"
-        >
-          Quality, tradition, and trust — that's what sets us apart
-        </motion.p>
+    <Section tone="canvas" size="lg">
+      <SectionHeader
+        eyebrow="Why families keep coming back"
+        title="Small shop standards, kept properly"
+        lead="We are a gruhudhyog — a home industry. That is the whole promise, and it sets what we will and won't put on the shelf."
+      />
 
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
-        >
-          {features.map((f) => {
-            const Icon = f.icon
-            return (
-              <motion.div
-                key={f.title}
-                variants={itemVariants}
-                whileHover={{ scale: 1.03, y: -4 }}
-                className="bg-white rounded-2xl p-8 shadow-md text-center hover:shadow-xl transition-all cursor-pointer"
+      <RevealGroup
+        each={0.1}
+        className="mt-16 grid grid-cols-1 gap-px overflow-hidden rounded-panel border border-line bg-line sm:grid-cols-2"
+      >
+        {features.map(({ icon: Icon, title, body }, i) => (
+          <RevealItem
+            key={title}
+            className="group relative bg-canvas p-8 transition-colors duration-500 hover:bg-surface md:p-10"
+          >
+            <div className="flex items-start justify-between gap-4">
+              <span className="grid h-11 w-11 place-items-center rounded-full bg-brand-tint text-brand transition-transform duration-500 group-hover:scale-110">
+                <Icon size={20} strokeWidth={1.7} />
+              </span>
+              <span
+                aria-hidden="true"
+                className="font-display text-2xl font-semibold text-line-strong transition-colors duration-500 group-hover:text-brand/40"
               >
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-saffron/10 flex items-center justify-center">
-                  <Icon size={32} className="text-saffron" />
-                </div>
-                <h3 className="font-heading text-brown text-xl font-bold mb-2">{f.title}</h3>
-                <p className="text-gray-600 font-body text-sm leading-relaxed">{f.description}</p>
-              </motion.div>
-            )
-          })}
-        </motion.div>
-      </div>
-    </section>
+                {String(i + 1).padStart(2, '0')}
+              </span>
+            </div>
+
+            <h3 className="mt-6 font-display text-h3 font-semibold text-ink">{title}</h3>
+            <p className="mt-3 font-body text-sm leading-relaxed text-ink-soft">{body}</p>
+          </RevealItem>
+        ))}
+      </RevealGroup>
+    </Section>
   )
 }

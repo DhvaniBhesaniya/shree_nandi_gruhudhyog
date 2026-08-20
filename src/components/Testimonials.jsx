@@ -1,99 +1,103 @@
-import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Star } from 'lucide-react'
+import { Star, Quote, ArrowUpRight } from 'lucide-react'
+import Section, { SectionHeader } from './ui/Section'
+import { RevealGroup, RevealItem } from './ui/Reveal'
+import { site } from '../lib/site'
 
 const testimonials = [
   {
     name: 'Priya Patel',
     location: 'Ahmedabad, Gujarat',
     initials: 'PP',
-    color: 'bg-saffron',
-    quote: 'The best namkeen I have ever tasted! It reminds me of my grandmother\'s kitchen. Shree Nandi has truly captured the authentic Gujarati flavour that\'s so hard to find these days.',
+    quote:
+      'The best namkeen I have ever tasted — it reminds me of my grandmother\'s kitchen. Shree Nandi has truly captured the authentic Gujarati flavour that is so hard to find these days.',
   },
   {
     name: 'Rajesh Sharma',
     location: 'Mumbai, Maharashtra',
     initials: 'RS',
-    color: 'bg-green',
-    quote: 'I order khakhra and pickles every month. The quality is consistently amazing and the delivery is always on time. My entire family is hooked on their products!',
+    quote:
+      'I order khakhra and pickles every month. The quality is consistently amazing and delivery is always on time. My entire family is hooked on their products.',
   },
   {
     name: 'Meena Desai',
     location: 'Surat, Gujarat',
     initials: 'MD',
-    color: 'bg-brown',
-    quote: 'Finding preservative-free snacks was a challenge until we discovered Shree Nandi. Now our kids enjoy healthy, homemade-style treats. The butter cookies are to die for!',
+    quote:
+      'Finding preservative-free snacks was a challenge until we discovered Shree Nandi. Now our kids enjoy healthy, homemade-style treats. The butter cookies are to die for.',
   },
 ]
 
+/**
+ * Customer quotes.
+ *
+ * Shown as a static three-up grid rather than the previous auto-rotating
+ * carousel. A carousel that advances every five seconds hides two thirds of the
+ * content at any moment, can't be read at the visitor's own pace, and — since it
+ * never paused on hover or focus — would swap out from under someone mid-sentence.
+ */
 export default function Testimonials() {
-  const [current, setCurrent] = useState(0)
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrent((prev) => (prev + 1) % testimonials.length)
-    }, 5000)
-    return () => clearInterval(timer)
-  }, [])
-
   return (
-    <section className="bg-saffron py-16 md:py-20 overflow-hidden">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.h2
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="font-heading text-3xl sm:text-4xl text-white text-center font-bold mb-12"
-        >
-          What Our Customers Say 💬
-        </motion.h2>
+    <Section tone="surface" size="lg">
+      <SectionHeader
+        eyebrow="In their words"
+        title="What our customers say"
+        lead="Been in the shop or ordered from us? A review on Google helps other families find us."
+      />
 
-        <div className="relative min-h-[280px] sm:min-h-[240px]">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={current}
-              initial={{ opacity: 0, x: 100 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -100 }}
-              transition={{ duration: 0.4 }}
-              className="bg-white rounded-2xl p-6 sm:p-8 shadow-xl"
-            >
-              <div className="flex items-center gap-4 mb-4">
-                <div className={`rounded-full w-14 h-14 flex items-center justify-center ${testimonials[current].color} text-white font-bold text-xl font-body shrink-0`}>
-                  {testimonials[current].initials}
-                </div>
-                <div>
-                  <h4 className="font-heading text-brown font-bold text-lg">{testimonials[current].name}</h4>
-                  <p className="font-body text-gray-500 text-sm">{testimonials[current].location}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-0.5 mb-3">
-                {[...Array(5)].map((_, j) => (
-                  <Star key={j} size={18} className="fill-gold text-gold" />
+      <RevealGroup each={0.1} className="mt-16 grid grid-cols-1 gap-5 lg:grid-cols-3">
+        {testimonials.map((t) => (
+          <RevealItem key={t.name}>
+            <figure className="flex h-full flex-col rounded-panel border border-line bg-canvas p-7 shadow-soft transition-shadow duration-500 hover:shadow-lift">
+              <Quote
+                size={26}
+                aria-hidden="true"
+                className="mb-5 shrink-0 fill-brand/15 text-brand/40"
+              />
+
+              <blockquote className="flex-1 font-body leading-relaxed text-ink-soft">
+                {t.quote}
+              </blockquote>
+
+              <div
+                className="mt-5 flex items-center gap-0.5"
+                role="img"
+                aria-label="Rated 5 out of 5"
+              >
+                {Array.from({ length: 5 }, (_, i) => (
+                  <Star key={i} size={14} className="fill-gold-500 text-gold-500" />
                 ))}
               </div>
-              <p className="text-gray-700 font-body italic leading-relaxed">
-                &ldquo;{testimonials[current].quote}&rdquo;
-              </p>
-            </motion.div>
-          </AnimatePresence>
-        </div>
 
-        {/* Dot Indicators */}
-        <div className="flex items-center justify-center gap-3 mt-8">
-          {testimonials.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setCurrent(i)}
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                i === current ? 'bg-white scale-125' : 'bg-white/40 hover:bg-white/60'
-              }`}
-              aria-label={`Go to testimonial ${i + 1}`}
-            />
-          ))}
-        </div>
+              <figcaption className="mt-5 flex items-center gap-3 border-t border-line pt-5">
+                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-brand-tint font-body text-sm font-semibold text-brand">
+                  {t.initials}
+                </span>
+                <span className="min-w-0">
+                  <span className="block font-body text-sm font-semibold text-ink">
+                    {t.name}
+                  </span>
+                  <span className="block font-body text-xs text-ink-faint">{t.location}</span>
+                </span>
+              </figcaption>
+            </figure>
+          </RevealItem>
+        ))}
+      </RevealGroup>
+
+      <div className="mt-10 text-center">
+        <a
+          href={site.mapsLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group inline-flex items-center gap-2 font-body text-sm font-semibold text-brand transition-colors hover:text-brand-hover"
+        >
+          Read and write reviews on Google
+          <ArrowUpRight
+            size={15}
+            className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+          />
+        </a>
       </div>
-    </section>
+    </Section>
   )
 }

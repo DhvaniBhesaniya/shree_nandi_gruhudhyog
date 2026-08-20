@@ -1,17 +1,77 @@
 <!doctype html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="/logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Shree Nandi Gruhudhyog — Premium Traditional Indian Food from Gujarat</title>
-    <meta name="description" content="Shree Nandi Gruhudhyog offers authentic homemade namkeen, khakhra, pickles, bakery products, cold drinks, wafers, biscuits and more — crafted with love in Gujarat, India." />
+
+    <!--
+      Applied before first paint so a returning dark-mode visitor never sees a
+      flash of the light theme. Must stay inline and ahead of the stylesheet.
+    -->
+    <script>
+      try {
+        var t = localStorage.getItem('sng-theme')
+        if (t === 'dark' || (!t && matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark')
+        }
+      } catch (e) {
+        /* private browsing — fall through to light */
+      }
+    </script>
+
+    <meta name="theme-color" content="#fdfcfb" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#1c1613" media="(prefers-color-scheme: dark)" />
+
+    <link rel="icon" href="/favicon-32.png" sizes="32x32" />
+    <link rel="icon" href="/favicon-16.png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,500..700,0..100,0..1&family=Inter:wght@400..600&family=Noto+Serif+Gujarati:wght@400..700&display=swap"
+    />
+
+    <!-- Title, description, canonical, Open Graph, Twitter and LocalBusiness
+         JSON-LD are all injected here from src/lib/site.js at build time, so
+         business details exist in exactly one place. See vite.config.js. -->
+    <!-- @seo -->
   </head>
   <body>
-    <div id="root"></div>
+    <!--
+      Instant first paint. The previous build gated the entire site behind a
+      hardcoded 2.5s "loading" timer; this is the opposite — inline styles so it
+      renders before any CSS or JS arrives, and React replaces it the moment the
+      app mounts. No artificial delay.
+    -->
+    <div id="root">
+      <div
+        style="
+          position: fixed;
+          inset: 0;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 1.1rem;
+          background: #fdfcfb;
+          font-family: Georgia, serif;
+          color: #3a2d24;
+        "
+      >
+        <img
+          src="/apple-touch-icon.png"
+          alt=""
+          width="64"
+          height="64"
+          style="border-radius: 50%; opacity: 0.9"
+        />
+        <p style="margin: 0; font-size: 1.05rem; letter-spacing: 0.02em; opacity: 0.55">
+          Shree Nandi Gruhudhyog
+        </p>
+      </div>
+    </div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

@@ -1,58 +1,66 @@
-import { motion } from 'framer-motion'
+import { Reveal } from './ui/Reveal'
 
 const brands = [
   'Balaji', 'Cornitos', "Mother's Recipe", 'Hocco', 'Pringles',
-  'Cadbury', 'Kissan', 'Nescafe', 'Nutella', 'Jabsons',
-  'Haldiram\'s', 'Biscoff', 'Kinder', 'Empire Bake', 'Cravity',
+  'Cadbury', 'Kissan', 'Nescafé', 'Nutella', 'Jabsons',
+  "Haldiram's", 'Biscoff', 'Kinder', 'Empire Bake', 'Cravity',
   'Shantaben', 'Gopal', 'Real Bites', 'Lipton', 'Vimal Wellness',
 ]
 
-// Duplicate for seamless loop
-const allBrands = [...brands, ...brands]
+const half = Math.ceil(brands.length / 2)
+const rows = [brands.slice(0, half), brands.slice(half)]
 
+/**
+ * Brand ticker.
+ *
+ * Driven by a CSS keyframe rather than an animated Framer transform. Two
+ * reasons: it runs entirely off the main thread, and the global
+ * prefers-reduced-motion rule in index.css can stop it — a Framer `repeat:
+ * Infinity` animation kept running regardless in the previous version.
+ *
+ * Two rows scrolling opposite ways reads as a texture rather than a single
+ * conveyor belt.
+ */
 export default function BrandsMarquee() {
   return (
-    <section className="bg-white py-10 md:py-14 overflow-hidden border-y border-gray-100">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6">
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="text-center font-heading text-lg sm:text-xl text-brown-light font-semibold"
-        >
-          Trusted Brands We Carry 🏪
-        </motion.p>
-      </div>
+    <section
+      aria-labelledby="brands-heading"
+      className="overflow-hidden border-y border-line bg-canvas py-14 md:py-16"
+    >
+      <Reveal className="mx-auto mb-9 max-w-7xl px-5 text-center sm:px-8 lg:px-10">
+        <p id="brands-heading" className="eyebrow text-ink-faint">
+          Alongside our own kitchen, we stock
+        </p>
+      </Reveal>
 
-      {/* Marquee container */}
-      <div className="relative">
-        {/* Fade edges */}
-        <div className="absolute left-0 top-0 bottom-0 w-20 sm:w-32 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
-        <div className="absolute right-0 top-0 bottom-0 w-20 sm:w-32 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
-
-        <motion.div
-          className="flex items-center gap-6 sm:gap-10 whitespace-nowrap"
-          animate={{ x: ['0%', '-50%'] }}
-          transition={{
-            x: {
-              duration: 30,
-              repeat: Infinity,
-              ease: 'linear',
-            },
-          }}
-        >
-          {allBrands.map((brand, i) => (
+      <div className="mask-edges flex flex-col gap-3.5">
+        {rows.map((row, i) => (
+          <div key={i} className="group flex overflow-hidden">
+            {/*
+              The keyframe translates -50%, so the track must hold two identical
+              halves for the loop to be seamless. Each half is the row repeated
+              twice (~2600px) rather than once — a single pass is only ~1300px
+              and would leave a visible gap on wide desktops once shifted.
+              aria-hidden on every repeat past the first keeps screen readers
+              from announcing the whole brand list four times.
+            */}
             <div
-              key={`${brand}-${i}`}
-              className="flex-shrink-0 bg-gray-50 hover:bg-saffron/10 border border-gray-100 rounded-xl px-6 py-3 transition-colors duration-300"
+              className={`marquee-track flex w-max shrink-0 items-center gap-3.5 pr-3.5 group-hover:[animation-play-state:paused] ${
+                i % 2 === 0 ? 'animate-marquee' : 'animate-marquee-slow [animation-direction:reverse]'
+              }`}
             >
-              <span className="font-heading font-bold text-brown text-sm sm:text-base whitespace-nowrap">
-                {brand}
-              </span>
+              {[...row, ...row, ...row, ...row].map((brand, j) => (
+                <span
+                  key={`${brand}-${j}`}
+                  aria-hidden={j >= row.length ? 'true' : undefined}
+                  className="shrink-0 rounded-full border border-line bg-surface px-5 py-2.5 font-body text-sm font-medium whitespace-nowrap text-ink-soft transition-colors duration-300 hover:border-brand/40 hover:text-ink"
+                >
+                  {brand}
+                </span>
+              ))}
             </div>
-          ))}
-        </motion.div>
+          </div>
+        ))}
       </div>
     </section>
   )
