@@ -33,6 +33,207 @@
       href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,500..700,0..100,0..1&family=Inter:wght@400..600&family=Noto+Serif+Gujarati:wght@400..700&display=swap"
     />
 
+    <!--
+      Splash styles are inline and self-contained on purpose: they must paint
+      before the CSS bundle downloads, which is the entire point of a preloader.
+      No Tailwind tokens are available here yet.
+    -->
+    <style>
+      #splash {
+        --p: 0;
+        --sp-bg: #fdfcfb;
+        --sp-ink: #3d2f24;
+        --sp-soft: #8a7563;
+        --sp-brand: #e0700c;
+        --sp-gold: #e0a625;
+        --sp-track: rgba(61, 47, 36, 0.09);
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: var(--sp-bg);
+        font-family: Georgia, "Times New Roman", serif;
+        opacity: 1;
+        transition: opacity 0.55s ease, visibility 0.55s ease;
+      }
+      html.dark #splash {
+        --sp-bg: #1b1512;
+        --sp-ink: #f4efe9;
+        --sp-soft: #a08d7c;
+        --sp-brand: #f0913a;
+        --sp-gold: #f0c65a;
+        --sp-track: rgba(244, 239, 233, 0.11);
+      }
+
+      /* Warm ground wash, so the panel isn't a flat sheet of off-white */
+      #splash::before {
+        content: "";
+        /* inset:0 + margin:auto + a fixed size centres this reliably, and
+           leaves `transform` free for the breathing animation. */
+        position: absolute;
+        inset: 0;
+        margin: auto;
+        width: 78vmin;
+        height: 78vmin;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(224, 112, 12, 0.13), transparent 68%);
+        animation: sp-breathe 4.5s ease-in-out infinite;
+      }
+
+      .sp-stage {
+        position: relative;
+        width: 168px;
+        height: 168px;
+        display: grid;
+        place-items: center;
+      }
+
+      .sp-art {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+      }
+
+      /*
+        Eight petals drawing themselves outward — a rangoli/mandala motif rather
+        than a generic spinner. It reads as handmade and regional, which is what
+        a gruhudhyog is; a bare spinner would say "a website is loading" instead
+        of "this business is loading".
+      */
+      .sp-petal {
+        fill: none;
+        stroke: var(--sp-gold);
+        stroke-width: 1.4;
+        stroke-linecap: round;
+        opacity: 0;
+        stroke-dasharray: 76;
+        stroke-dashoffset: 76;
+        animation: sp-draw 2.6s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+      }
+
+      /* Slow dashed halo, turning the opposite way to the petal sweep */
+      .sp-halo {
+        fill: none;
+        stroke: var(--sp-brand);
+        stroke-width: 1;
+        stroke-dasharray: 2 9;
+        opacity: 0.4;
+        transform-origin: 84px 84px;
+        animation: sp-spin 18s linear infinite;
+      }
+
+      .sp-track-ring {
+        fill: none;
+        stroke: var(--sp-track);
+        stroke-width: 2.5;
+      }
+
+      /* Real load progress — driven from JS, never a fixed timer */
+      .sp-prog {
+        fill: none;
+        stroke: var(--sp-brand);
+        stroke-width: 2.5;
+        stroke-linecap: round;
+        stroke-dasharray: 339.29;
+        stroke-dashoffset: calc(339.29px * (1 - var(--p)));
+        transform: rotate(-90deg);
+        transform-origin: 84px 84px;
+      }
+
+      .sp-logo {
+        position: relative;
+        width: 74px;
+        height: 74px;
+        border-radius: 50%;
+        object-fit: cover;
+        animation: sp-in 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+      }
+
+      .sp-text {
+        margin: 26px 0 0;
+        text-align: center;
+        animation: sp-rise 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
+      }
+      .sp-name {
+        margin: 0;
+        font-size: clamp(1.15rem, 4.4vw, 1.5rem);
+        font-weight: 700;
+        color: var(--sp-ink);
+      }
+      .sp-gu {
+        margin: 6px 0 0;
+        font-size: 0.95rem;
+        color: var(--sp-brand);
+      }
+      .sp-tag {
+        margin: 14px 0 0;
+        font-family: Helvetica, Arial, sans-serif;
+        font-size: 0.66rem;
+        font-weight: 600;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: var(--sp-soft);
+      }
+
+      /* Exit: lift and fade, handing over to the page rather than blinking out */
+      #splash[data-state="done"] {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+      #splash[data-state="done"] .sp-stage,
+      #splash[data-state="done"] .sp-text {
+        transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+        transform: translateY(-10px) scale(1.04);
+      }
+
+      @keyframes sp-draw {
+        0%   { opacity: 0; stroke-dashoffset: 76; }
+        22%  { opacity: 0.95; }
+        55%  { opacity: 0.95; stroke-dashoffset: 0; }
+        88%  { opacity: 0; stroke-dashoffset: 0; }
+        100% { opacity: 0; stroke-dashoffset: 76; }
+      }
+      @keyframes sp-spin {
+        to { transform: rotate(360deg); }
+      }
+      @keyframes sp-breathe {
+        0%, 100% { transform: scale(1); opacity: 0.85; }
+        50%      { transform: scale(1.08); opacity: 1; }
+      }
+      @keyframes sp-in {
+        from { opacity: 0; transform: scale(0.72); }
+        to   { opacity: 1; transform: scale(1); }
+      }
+      @keyframes sp-rise {
+        from { opacity: 0; transform: translateY(12px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+
+      /* Anyone who asked for less motion still gets the mark, the name and the
+         progress ring — just none of the spinning, drawing or breathing. */
+      @media (prefers-reduced-motion: reduce) {
+        #splash::before,
+        .sp-petal,
+        .sp-halo {
+          animation: none;
+        }
+        .sp-petal {
+          opacity: 0.5;
+          stroke-dashoffset: 0;
+        }
+        .sp-logo,
+        .sp-text {
+          animation-duration: 0.01ms;
+        }
+      }
+    </style>
+
     <!-- Title, description, canonical, Open Graph, Twitter and LocalBusiness
          JSON-LD are all injected here from src/lib/site.js at build time, so
          business details exist in exactly one place. See vite.config.js. -->
@@ -65,46 +266,98 @@
     <meta name="twitter:description" content="Authentic Gujarati farsan, namkeen, khakhra, bhakhri, pickles, bakery, soda bar and ice cream — homemade specialities plus trusted brands, in Khoraj, Gandhinagar." />
     <meta name="twitter:image" content="https://dhvanibhesaniya.github.io/shree_nandi_gruhudhyog/og-image.jpg" />
 
-    <script type="application/ld+json">{"@context":"https://schema.org","@type":["GroceryStore","FoodEstablishment"],"@id":"https://dhvanibhesaniya.github.io/shree_nandi_gruhudhyog/","name":"Shree Nandi Gruhudhyog","alternateName":"શ્રી નંદી ગૃહ ઉદ્યોગ","description":"Authentic Gujarati farsan, namkeen, khakhra, bhakhri, pickles, bakery, soda bar and ice cream — homemade specialities plus trusted brands, in Khoraj, Gandhinagar.","url":"https://dhvanibhesaniya.github.io/shree_nandi_gruhudhyog/","telephone":"+919998714455","email":"shreenandigruhudhyog@gmail.com","image":"https://dhvanibhesaniya.github.io/shree_nandi_gruhudhyog/og-image.jpg","logo":"https://dhvanibhesaniya.github.io/shree_nandi_gruhudhyog/icon-512.png","priceRange":"₹","currenciesAccepted":"INR","address":{"@type":"PostalAddress","streetAddress":"Block A, Ground Floor, Shop No. A-12, PANACHE, Khoraj","addressLocality":"Gandhinagar","addressRegion":"Gujarat","postalCode":"382421","addressCountry":"IN"},"openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],"opens":"09:00","closes":"21:00"}],"hasMap":"https://maps.app.goo.gl/oJNutRSV7BzHWXP68","areaServed":[{"@type":"City","name":"Gandhinagar"},{"@type":"City","name":"Ahmedabad"},{"@type":"State","name":"Gujarat"}],"makesOffer":[{"@type":"Offer","itemOffered":{"@type":"Product","name":"Namkeen & Farsan"}},{"@type":"Offer","itemOffered":{"@type":"Product","name":"Khakhra & Bhakhri"}},{"@type":"Offer","itemOffered":{"@type":"Product","name":"Pickles & Achaar"}},{"@type":"Offer","itemOffered":{"@type":"Product","name":"Bakery & Cookies"}},{"@type":"Offer","itemOffered":{"@type":"Product","name":"Wafers & Chips"}},{"@type":"Offer","itemOffered":{"@type":"Product","name":"Soda Bar"}},{"@type":"Offer","itemOffered":{"@type":"Product","name":"Ice Cream"}}]}</script>
-    <script type="module" crossorigin src="/shree_nandi_gruhudhyog/assets/index--1jL7omp.js"></script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":["GroceryStore","FoodEstablishment"],"@id":"https://dhvanibhesaniya.github.io/shree_nandi_gruhudhyog/","name":"Shree Nandi Gruhudhyog","alternateName":"શ્રી નંદી ગૃહ ઉદ્યોગ","description":"Authentic Gujarati farsan, namkeen, khakhra, bhakhri, pickles, bakery, soda bar and ice cream — homemade specialities plus trusted brands, in Khoraj, Gandhinagar.","url":"https://dhvanibhesaniya.github.io/shree_nandi_gruhudhyog/","telephone":"+919998714455","email":"shreenandigruhudhyog@gmail.com","image":"https://dhvanibhesaniya.github.io/shree_nandi_gruhudhyog/og-image.jpg","logo":"https://dhvanibhesaniya.github.io/shree_nandi_gruhudhyog/icon-512.png","priceRange":"₹","currenciesAccepted":"INR","address":{"@type":"PostalAddress","streetAddress":"Block A, Ground Floor, Shop No. A-12, PANACHE, Khoraj","addressLocality":"Gandhinagar","addressRegion":"Gujarat","postalCode":"382421","addressCountry":"IN"},"openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],"opens":"08:00","closes":"23:00"}],"hasMap":"https://maps.app.goo.gl/oJNutRSV7BzHWXP68","areaServed":[{"@type":"City","name":"Gandhinagar"},{"@type":"City","name":"Ahmedabad"},{"@type":"State","name":"Gujarat"}],"makesOffer":[{"@type":"Offer","itemOffered":{"@type":"Product","name":"Namkeen & Farsan"}},{"@type":"Offer","itemOffered":{"@type":"Product","name":"Khakhra & Bhakhri"}},{"@type":"Offer","itemOffered":{"@type":"Product","name":"Pickles & Achaar"}},{"@type":"Offer","itemOffered":{"@type":"Product","name":"Bakery & Cookies"}},{"@type":"Offer","itemOffered":{"@type":"Product","name":"Wafers & Chips"}},{"@type":"Offer","itemOffered":{"@type":"Product","name":"Soda Bar"}},{"@type":"Offer","itemOffered":{"@type":"Product","name":"Ice Cream"}}]}</script>
+    <script type="module" crossorigin src="/shree_nandi_gruhudhyog/assets/index-4Ybs84dM.js"></script>
     <link rel="modulepreload" crossorigin href="/shree_nandi_gruhudhyog/assets/rolldown-runtime-B0Z9INg1.js">
     <link rel="modulepreload" crossorigin href="/shree_nandi_gruhudhyog/assets/motion-PMgMGIwd.js">
     <link rel="modulepreload" crossorigin href="/shree_nandi_gruhudhyog/assets/vendor-B5terFLz.js">
-    <link rel="stylesheet" crossorigin href="/shree_nandi_gruhudhyog/assets/index-BR4vI2lZ.css">
+    <link rel="stylesheet" crossorigin href="/shree_nandi_gruhudhyog/assets/index-CAthhhzq.css">
   </head>
   <body>
+    <div id="root"></div>
+
     <!--
-      Instant first paint. The previous build gated the entire site behind a
-      hardcoded 2.5s "loading" timer; this is the opposite — inline styles so it
-      renders before any CSS or JS arrives, and React replaces it the moment the
-      app mounts. No artificial delay.
+      Lives in the HTML rather than in React so it is up on the very first paint.
+      A preloader that only appears once the JS bundle has downloaded would miss
+      most of the wait it exists to cover. src/lib/splash.js dismisses it when
+      the fonts and hero images are actually ready.
     -->
-    <div id="root">
-      <div
-        style="
-          position: fixed;
-          inset: 0;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          gap: 1.1rem;
-          background: #fdfcfb;
-          font-family: Georgia, serif;
-          color: #3a2d24;
-        "
-      >
-        <img
-          src="/shree_nandi_gruhudhyog/apple-touch-icon.png"
-          alt=""
-          width="64"
-          height="64"
-          style="border-radius: 50%; opacity: 0.9"
-        />
-        <p style="margin: 0; font-size: 1.05rem; letter-spacing: 0.02em; opacity: 0.55">
-          Shree Nandi Gruhudhyog
-        </p>
+    <div id="splash" data-state="loading" role="status" aria-label="Loading Shree Nandi Gruhudhyog">
+      <div class="sp-stage">
+        <svg class="sp-art" viewBox="0 0 168 168" aria-hidden="true">
+          <circle class="sp-halo" cx="84" cy="84" r="80" />
+          <g>
+            <ellipse class="sp-petal" cx="84" cy="40" rx="8.5" ry="19" style="animation-delay: 0s" />
+            <ellipse class="sp-petal" cx="84" cy="40" rx="8.5" ry="19" transform="rotate(45 84 84)" style="animation-delay: 0.1s" />
+            <ellipse class="sp-petal" cx="84" cy="40" rx="8.5" ry="19" transform="rotate(90 84 84)" style="animation-delay: 0.2s" />
+            <ellipse class="sp-petal" cx="84" cy="40" rx="8.5" ry="19" transform="rotate(135 84 84)" style="animation-delay: 0.3s" />
+            <ellipse class="sp-petal" cx="84" cy="40" rx="8.5" ry="19" transform="rotate(180 84 84)" style="animation-delay: 0.4s" />
+            <ellipse class="sp-petal" cx="84" cy="40" rx="8.5" ry="19" transform="rotate(225 84 84)" style="animation-delay: 0.5s" />
+            <ellipse class="sp-petal" cx="84" cy="40" rx="8.5" ry="19" transform="rotate(270 84 84)" style="animation-delay: 0.6s" />
+            <ellipse class="sp-petal" cx="84" cy="40" rx="8.5" ry="19" transform="rotate(315 84 84)" style="animation-delay: 0.7s" />
+          </g>
+          <circle class="sp-track-ring" cx="84" cy="84" r="54" />
+          <circle class="sp-prog" cx="84" cy="84" r="54" />
+        </svg>
+
+        <img class="sp-logo" src="/shree_nandi_gruhudhyog/apple-touch-icon.png" alt="" width="74" height="74" />
+      </div>
+
+      <div class="sp-text">
+        <p class="sp-name">Shree Nandi Gruhudhyog</p>
+        <p class="sp-gu" lang="gu">શ્રી નંદી ગૃહ ઉદ્યોગ</p>
+        <p class="sp-tag">Taste the tradition</p>
       </div>
     </div>
+
+    <script>
+      /*
+       * Starts the progress ring immediately, before the app bundle arrives.
+       *
+       * The ring eases asymptotically toward 92% and stops there — it never
+       * claims to have finished on a timer. src/lib/splash.js carries it to 100%
+       * once the fonts and hero images have genuinely loaded.
+       */
+      ;(function () {
+        var el = document.getElementById('splash')
+        if (!el) return
+
+        var start = performance.now()
+        var raf = 0
+
+        // Spread over roughly the intro length in src/lib/splash.js, so the ring
+        // is still visibly creeping when the completion tween takes over rather
+        // than sitting parked at 92% for seconds.
+        function tick(now) {
+          var t = (now - start) / 3400
+          var eased = 1 - Math.pow(2, -5 * Math.min(t, 1))
+          el.style.setProperty('--p', (eased * 0.92).toFixed(4))
+          raf = requestAnimationFrame(tick)
+        }
+        raf = requestAnimationFrame(tick)
+
+        window.__splash = {
+          start: start,
+          stop: function () {
+            cancelAnimationFrame(raf)
+          },
+        }
+
+        /*
+         * Failsafe. Because the splash is baked into the HTML, a JS bundle that
+         * fails to load would otherwise leave it covering the page forever. This
+         * must stay comfortably above the intro length in src/lib/splash.js, so
+         * it only ever fires when something has genuinely gone wrong.
+         */
+        setTimeout(function () {
+          if (el.isConnected && el.dataset.state !== 'done') {
+            window.__splash.stop()
+            el.style.setProperty('--p', '1')
+            el.dataset.state = 'done'
+          }
+        }, 8000)
+      })()
+    </script>
+
   </body>
 </html>
