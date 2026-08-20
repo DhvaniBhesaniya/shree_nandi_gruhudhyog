@@ -1,4 +1,6 @@
+import { useEffect } from 'react'
 import { MotionConfig } from 'framer-motion'
+import { dismissSplash } from './lib/splash'
 import Navbar from './components/Navbar'
 import ScrollProgress from './components/ScrollProgress'
 import Hero from './components/Hero'
@@ -18,6 +20,12 @@ import Footer from './components/Footer'
 import FloatingActions from './components/FloatingActions'
 
 export default function App() {
+  // Runs after the first commit, so the hero <img> elements the splash waits on
+  // are already in the DOM by the time it starts looking for them.
+  useEffect(() => {
+    dismissSplash()
+  }, [])
+
   return (
     /*
      * reducedMotion="user" makes Framer Motion drop transform and layout

@@ -111,6 +111,44 @@ function tags(base) {
  * emits robots.txt / sitemap.xml / manifest.webmanifest so those stay in sync
  * with site.js too.
  */
+/** The generated files, keyed by their served path. */
+function staticFiles() {
+  return {
+    'robots.txt': {
+      type: 'text/plain',
+      body: `User-agent: *\nAllow: /\n\nSitemap: ${abs('sitemap.xml')}\n`,
+    },
+    'sitemap.xml': {
+      type: 'application/xml',
+      body:
+        `<?xml version="1.0" encoding="UTF-8"?>\n` +
+        `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
+        `  <url>\n    <loc>${site.url}</loc>\n    <changefreq>monthly</changefreq>\n    <priority>1.0</priority>\n  </url>\n` +
+        `</urlset>\n`,
+    },
+    'manifest.webmanifest': {
+      type: 'application/manifest+json',
+      body: JSON.stringify(
+        {
+          name: site.name,
+          short_name: 'Shree Nandi',
+          description: site.description,
+          start_url: '.',
+          display: 'standalone',
+          background_color: '#fdfcfb',
+          theme_color: '#e8760c',
+          icons: [
+            { src: 'apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+            { src: 'icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any maskable' },
+          ],
+        },
+        null,
+        2,
+      ),
+    },
+  }
+}
+
 export function seoPlugin() {
   let base = '/'
 
@@ -119,6 +157,25 @@ export function seoPlugin() {
 
     configResolved(config) {
       base = config.base
+    },
+
+    /*
+     * Serve the generated files in dev too.
+     *
+     * They are emitted in generateBundle, which only runs for `vite build`. In
+     * dev the requests fell through to the SPA fallback and came back as HTML,
+     * so the browser reported "Manifest: Line 1, column 1, Syntax error" on
+     * every page load.
+     */
+    configureServer(server) {
+      const files = staticFiles()
+      server.middlewares.use((req, res, next) => {
+        const name = (req.url ?? '').split('?')[0].replace(/^.*\//, '')
+        const file = files[name]
+        if (!file) return next()
+        res.setHeader('Content-Type', file.type)
+        res.end(file.body)
+      })
     },
 
     transformIndexHtml: {
@@ -133,39 +190,9 @@ export function seoPlugin() {
     },
 
     generateBundle() {
-      const emit = (fileName, source) =>
-        this.emitFile({ type: 'asset', fileName, source })
-
-      emit('robots.txt', `User-agent: *\nAllow: /\n\nSitemap: ${abs('sitemap.xml')}\n`)
-
-      emit(
-        'sitemap.xml',
-        `<?xml version="1.0" encoding="UTF-8"?>\n` +
-          `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
-          `  <url>\n    <loc>${site.url}</loc>\n    <changefreq>monthly</changefreq>\n    <priority>1.0</priority>\n  </url>\n` +
-          `</urlset>\n`,
-      )
-
-      emit(
-        'manifest.webmanifest',
-        JSON.stringify(
-          {
-            name: site.name,
-            short_name: 'Shree Nandi',
-            description: site.description,
-            start_url: '.',
-            display: 'standalone',
-            background_color: '#fdfcfb',
-            theme_color: '#e8760c',
-            icons: [
-              { src: 'apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
-              { src: 'icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any maskable' },
-            ],
-          },
-          null,
-          2,
-        ),
-      )
+      for (const [fileName, { body }] of Object.entries(staticFiles())) {
+        this.emitFile({ type: 'asset', fileName, source: body })
+      }
     },
   }
 }

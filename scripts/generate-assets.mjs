@@ -91,7 +91,7 @@ const overlay = Buffer.from(`
         letter-spacing="1.6">FARSAN &#183; NAMKEEN &#183; KHAKHRA &#183; PICKLES &#183; SODA BAR</text>
 
   <text x="86" y="566" font-family="Helvetica, Arial, sans-serif" font-size="24"
-        fill="#ffffff" opacity="0.62">Khoraj, Gandhinagar &#183; Open daily 9 AM &#8211; 9 PM</text>
+        fill="#ffffff" opacity="0.62">Khoraj, Gandhinagar &#183; Open daily 8 AM &#8211; 11 PM</text>
 </svg>`)
 
 await sharp(base)
