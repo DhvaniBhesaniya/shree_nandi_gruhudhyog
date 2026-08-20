@@ -76,6 +76,12 @@ export default function SmartImage({
           sizes={sizes}
           loading={priority ? 'eager' : 'lazy'}
           fetchPriority={priority ? 'high' : 'auto'}
+          // Explicit hook for src/lib/splash.js, which holds the preloader until
+          // the above-the-fold images have decoded. A data- attribute rather
+          // than reusing fetchpriority: React emits that one camelCased, and
+          // relying on HTML's case-insensitive attribute matching to find it
+          // again is a subtlety the loader shouldn't hinge on.
+          data-splash-wait={priority ? 'true' : undefined}
           decoding={priority ? 'sync' : 'async'}
           onLoad={() => setLoaded(true)}
           className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${

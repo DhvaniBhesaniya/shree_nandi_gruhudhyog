@@ -30,7 +30,7 @@ export const site = {
   mapsEmbed:
     'https://maps.google.com/maps?q=Shree+Nandi+Gruhudhyog,+PANACHE,+Khoraj,+Gandhinagar,+Gujarat&t=&z=16&ie=UTF8&iwloc=&output=embed',
 
-  hours: { open: '09:00', close: '21:00', label: 'Open every day, 9 AM – 9 PM' },
+  hours: { open: '08:00', close: '23:00', label: 'Open every day, 8 AM – 11 PM' },
 
   // Deployed base URL — used for canonical + Open Graph absolute image URLs.
   url: 'https://dhvanibhesaniya.github.io/shree_nandi_gruhudhyog/',

@@ -21,8 +21,8 @@ npm run dev          # dev server on http://localhost:5173/shree_nandi_gruhudhyo
 | `npm run build`   | Production build into `dist/`                                             |
 | `npm run preview` | Serve the built output locally                                            |
 | `npm run lint`    | ESLint over the whole project                                             |
-| `npm run smoke`   | Render the app once via SSR to catch crashes and invalid props             |
-| `npm run assets`  | Regenerate favicons, the social share card, and blur-up placeholders       |
+| `npm run smoke`   | Render the app once via SSR to catch crashes and invalid props            |
+| `npm run assets`  | Regenerate favicons, the social share card, and blur-up placeholders      |
 | `npm run deploy`  | Build and publish `dist/` to the `gh-pages` branch                        |
 
 ---
@@ -75,6 +75,18 @@ change between themes — text on a photo, for instance.
 **Enquiries go to WhatsApp.** There is no backend. The contact form validates and
 then opens `wa.me` with the enquiry pre-written; see `waMessage` in
 `src/lib/site.js`. If you ever add a server, that is the single place to change.
+
+**The preloader lives in `index.html`, not in React.** Markup, inline styles and
+the progress ring are all in the HTML so it paints on the first frame — a splash
+rendered by React could only appear *after* the JS bundle downloaded, missing the
+wait it exists to cover. [`src/lib/splash.js`](src/lib/splash.js) dismisses it
+once webfonts have settled and the hero image has decoded, with a 900ms floor so
+it can't flash and a 3.2s ceiling so a slow connection can't trap anyone. Repeat
+visits in the same session get a much shorter version. There is also a 6s
+self-destruct in the inline script, because a splash baked into the HTML would
+otherwise cover the page forever if the bundle failed to load. Images that the
+loader should wait for are marked by `<SmartImage priority>`, which emits
+`data-splash-wait`.
 
 **Motion is centralised.** Easing curves and reveal variants are in
 `src/lib/motion.js` and mirrored as CSS custom properties in `index.css`.
