@@ -76,17 +76,35 @@ change between themes — text on a photo, for instance.
 then opens `wa.me` with the enquiry pre-written; see `waMessage` in
 `src/lib/site.js`. If you ever add a server, that is the single place to change.
 
-**The preloader lives in `index.html`, not in React.** Markup, inline styles and
-the progress ring are all in the HTML so it paints on the first frame — a splash
-rendered by React could only appear *after* the JS bundle downloaded, missing the
-wait it exists to cover. [`src/lib/splash.js`](src/lib/splash.js) dismisses it
-once webfonts have settled and the hero image has decoded, with a 900ms floor so
-it can't flash and a 3.2s ceiling so a slow connection can't trap anyone. Repeat
-visits in the same session get a much shorter version. There is also a 6s
-self-destruct in the inline script, because a splash baked into the HTML would
-otherwise cover the page forever if the bundle failed to load. Images that the
-loader should wait for are marked by `<SmartImage priority>`, which emits
+**The preloader lives in `index.html`, not in React.** Markup and inline styles
+are in the HTML so it paints on the first frame — a splash rendered by React
+could only appear *after* the JS bundle downloaded, missing the wait it exists to
+cover. The intro runs for 5s (`--sp-intro` in `index.html`, kept in step with
+`INTRO_MS` in [`src/lib/splash.js`](src/lib/splash.js), which dismisses it). The
+inline script also self-destructs after 10s, because a splash baked into the HTML
+would otherwise cover the page forever if the bundle failed to load. Images the
+loader waits on are marked by `<SmartImage priority>`, which emits
 `data-splash-wait`.
+
+**Animations must stick to `transform` and `opacity`.** Those are the only two
+properties a browser can animate on the compositor thread; anything else forces
+main-thread work every frame, which is what makes an animation stutter — most
+visibly during the intro, when React is busy mounting the whole page. Things that
+have bitten this codebase already, all now fixed and worth not reintroducing:
+
+- animating `stroke-dashoffset`, or transforming an SVG *child* element (rotate a
+  wrapping `<div>` instead)
+- driving styles from a JS `requestAnimationFrame` loop — JS runs on the main
+  thread, so it stutters exactly when you least want it to
+- animating `height: 0 → auto`, or any blanket everything-transition
+- `mix-blend-mode`, which also blocks layer promotion for everything beneath it
+- `backdrop-filter` on an element that moves, or on a fixed bar over scrolling
+  content (it re-samples every frame)
+- `filter: blur()` on large boxes — use a radial gradient
+- framer `layout` animations over a CSS multi-column container; and prefer
+  `layout="position"` on list items, since full `layout` scale-corrects the text
+- calling `setState` per frame, or reading `getBoundingClientRect()` in a scroll
+  handler (use `IntersectionObserver`)
 
 **Motion is centralised.** Easing curves and reveal variants are in
 `src/lib/motion.js` and mirrored as CSS custom properties in `index.css`.

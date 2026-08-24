@@ -109,20 +109,25 @@ export default function Gallery() {
         ))}
       </div>
 
-      {/* Masonry */}
-      <motion.div
-        layout
-        className="mt-10 columns-2 gap-4 md:columns-3 lg:columns-4 [&>*]:mb-4"
-      >
-        <AnimatePresence mode="popLayout">
+      {/*
+        Masonry.
+
+        Deliberately no framer `layout` animation here. Layout animations work by
+        measuring every child and writing explicit transforms each frame, which
+        fights CSS multi-column directly — the columns reflow underneath the
+        measurements, so 31 items produced both visual glitches and a lot of
+        main-thread work on every filter change. Plain opacity/scale cross-fades
+        composite for free and read just as deliberately.
+      */}
+      <div className="mt-10 columns-2 gap-4 md:columns-3 lg:columns-4 [&>*]:mb-4">
+        <AnimatePresence>
           {visible.map((photo, i) => (
             <motion.button
               key={photo.key}
-              layout
-              initial={{ opacity: 0, scale: 0.94 }}
+              initial={{ opacity: 0, scale: 0.96 }}
               animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.94 }}
-              transition={{ duration: 0.4, delay: Math.min(i * 0.02, 0.3), ease: ease.outExpo }}
+              exit={{ opacity: 0, scale: 0.96 }}
+              transition={{ duration: 0.45, delay: Math.min(i * 0.018, 0.28), ease: ease.outExpo }}
               onClick={() => setOpenAt(i)}
               aria-label={`View larger: ${photo.alt}`}
               className="group relative block w-full break-inside-avoid overflow-hidden rounded-card shadow-soft transition-shadow duration-500 hover:shadow-lift"
@@ -141,7 +146,7 @@ export default function Gallery() {
 
               <span
                 aria-hidden="true"
-                className="absolute right-3 top-3 grid h-8 w-8 place-items-center rounded-full bg-white/15 text-white opacity-0 backdrop-blur-sm transition-all duration-400 group-hover:opacity-100 group-focus-visible:opacity-100"
+                className="absolute right-3 top-3 grid h-8 w-8 place-items-center rounded-full bg-white/15 text-white opacity-0 backdrop-blur-sm transition-opacity duration-400 group-hover:opacity-100 group-focus-visible:opacity-100"
               >
                 <Expand size={14} />
               </span>
@@ -152,7 +157,7 @@ export default function Gallery() {
             </motion.button>
           ))}
         </AnimatePresence>
-      </motion.div>
+      </div>
 
       <AnimatePresence>
         {openAt !== null && (

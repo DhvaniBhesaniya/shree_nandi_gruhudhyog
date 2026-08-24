@@ -40,32 +40,45 @@ export function useEscapeKey(active, handler) {
 /**
  * Tracks which section is currently in view, for navbar highlighting.
  *
- * Uses a viewport band just below the fixed navbar rather than element
- * visibility ratios, so tall and short sections behave the same way.
+ * Uses IntersectionObserver rather than a scroll handler. The previous version
+ * called getBoundingClientRect() on every section plus read body.scrollHeight on
+ * every scroll event, which forces a synchronous layout each time — the single
+ * worst scroll-jank source on the page. The observer does the same job off the
+ * main thread and fires only when a section actually crosses the band.
+ *
+ * The band is the strip between the navbar and 55% down the viewport, so the
+ * "current" section is whatever occupies the top of the screen, and tall and
+ * short sections behave the same way.
+ *
+ * Returns null when nothing is in the band — at the very top of the page that's
+ * correct, since the hero isn't one of the nav destinations.
  */
 export function useActiveSection(ids, offset = 96) {
-  const [active, setActive] = useState(ids[0])
+  const [active, setActive] = useState(null)
 
   useEffect(() => {
-    const pick = () => {
-      let current = ids[0]
-      for (const id of ids) {
-        const el = document.getElementById(id)
-        if (el && el.getBoundingClientRect().top <= offset + 8) current = id
-      }
-      // Near the very bottom the last section may never cross the band.
-      const atBottom =
-        window.innerHeight + window.scrollY >= document.body.scrollHeight - 120
-      setActive(atBottom ? ids[ids.length - 1] : current)
-    }
+    const els = ids.map((id) => document.getElementById(id)).filter(Boolean)
+    if (!els.length) return
 
-    pick()
-    window.addEventListener('scroll', pick, { passive: true })
-    window.addEventListener('resize', pick)
-    return () => {
-      window.removeEventListener('scroll', pick)
-      window.removeEventListener('resize', pick)
-    }
+    const inBand = new Set()
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) inBand.add(entry.target.id)
+          else inBand.delete(entry.target.id)
+        }
+        // Document order, last match wins — that's the one furthest down the
+        // page, i.e. the one the visitor has most recently scrolled into.
+        const current = ids.filter((id) => inBand.has(id)).pop()
+        if (current) setActive(current)
+        else setActive(null)
+      },
+      { rootMargin: `-${offset}px 0px -55% 0px`, threshold: 0 },
+    )
+
+    els.forEach((el) => io.observe(el))
+    return () => io.disconnect()
   }, [ids, offset])
 
   return active
