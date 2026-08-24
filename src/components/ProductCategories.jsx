@@ -103,17 +103,14 @@ function CategoryCard({ name, blurb, picture, feature }) {
       <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-5">
         <div className="min-w-0">
           <h3 className="font-display text-h3 font-semibold text-white">{name}</h3>
-          {/* Description stays out of the way until the card is engaged */}
-          <motion.p
-            variants={{
-              rest: { opacity: 0, height: 0, y: 6 },
-              hover: { opacity: 1, height: 'auto', y: 0 },
-            }}
-            transition={{ duration: 0.4, ease: ease.outExpo }}
-            className="overflow-hidden font-body text-sm text-white/75"
-          >
-            <span className="block pt-1.5">{blurb}</span>
-          </motion.p>
+          {/*
+            Always visible, for two reasons. Animating `height: 0 -> auto` is a
+            layout animation — it reflows the card contents on every frame of the
+            hover, which is not something the compositor can take over. And it
+            was gated behind hover, so on a phone the description was simply
+            never readable at all.
+          */}
+          <p className="mt-1.5 font-body text-sm text-white/75">{blurb}</p>
         </div>
 
         <motion.span

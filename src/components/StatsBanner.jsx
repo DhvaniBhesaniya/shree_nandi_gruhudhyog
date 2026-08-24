@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react'
-import { motion, useInView } from 'framer-motion'
+import { useEffect, useRef } from 'react'
+import { motion, useInView, animate } from 'framer-motion'
 import { Boxes, Users, CalendarDays, Wheat } from 'lucide-react'
 import { RevealGroup, RevealItem } from './ui/Reveal'
 import { ease } from '../lib/motion'
@@ -14,36 +14,37 @@ const stats = [
 /**
  * Animated counter.
  *
- * Driven by requestAnimationFrame with an eased curve rather than the previous
- * 16ms setInterval, which stepped linearly and drifted on slower devices — the
- * ease-out also makes the number feel like it's settling rather than stopping.
+ * Writes straight to the DOM node's text through framer's `animate`, rather than
+ * calling setState on every frame. The previous version re-rendered React
+ * roughly 108 times per counter over the 1.8s run — four counters meant ~430
+ * renders of this subtree, which is exactly the kind of thing that makes a
+ * scroll feel like it's stuttering. Nothing here re-renders at all.
  */
 function CountUp({ target, suffix, run }) {
-  const [value, setValue] = useState(0)
-  const frame = useRef(0)
+  const ref = useRef(null)
 
   useEffect(() => {
-    if (!run) return
+    const node = ref.current
+    if (!run || !node) return
 
-    const DURATION = 1800
-    let start
+    const format = (v) => `${Math.round(v).toLocaleString('en-IN')}${suffix}`
 
-    const tick = (now) => {
-      start ??= now
-      const t = Math.min((now - start) / DURATION, 1)
-      const eased = 1 - Math.pow(1 - t, 3)
-      setValue(Math.round(target * eased))
-      if (t < 1) frame.current = requestAnimationFrame(tick)
-    }
+    const controls = animate(0, target, {
+      duration: 1.8,
+      ease: ease.outExpo,
+      onUpdate: (v) => {
+        node.textContent = format(v)
+      },
+    })
 
-    frame.current = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(frame.current)
-  }, [run, target])
+    return () => controls.stop()
+  }, [run, target, suffix])
 
+  // Rendered at zero so the layout is reserved and the markup is meaningful
+  // before the animation starts (and if reduced motion cuts it short).
   return (
-    <span className="tabular-nums">
-      {value.toLocaleString('en-IN')}
-      {suffix}
+    <span ref={ref} className="tabular-nums">
+      {`0${suffix}`}
     </span>
   )
 }

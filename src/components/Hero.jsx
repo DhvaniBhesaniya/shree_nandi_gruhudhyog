@@ -50,22 +50,26 @@ export default function Hero() {
       className="grain relative flex min-h-[100svh] items-center overflow-hidden pt-[calc(var(--nav-h)+2rem)] pb-16 md:pb-24"
     >
       {/* Warm ground. Two offset radial washes give the flat canvas some depth
-          without introducing another image to download. */}
-      <div aria-hidden="true" className="absolute inset-0 -z-10">
-        <div className="absolute inset-0 bg-canvas" />
-        <div className="absolute -left-1/4 top-0 h-[70vh] w-[70vw] rounded-full bg-saffron-200/40 blur-[100px] dark:bg-saffron-900/25" />
-        <div className="absolute -right-[12%] bottom-0 h-[60vh] w-[60vw] rounded-full bg-gold-300/30 blur-[110px] dark:bg-saffron-950/40" />
+          without introducing another image to download.
+
+          These are gradients, not blurred solid boxes. `filter: blur(100px)` on
+          a 70vw element is a genuinely expensive rasterisation on a mid-range
+          phone, and a radial gradient gives the identical soft falloff with no
+          filter at all. */}
+      <div aria-hidden="true" className="absolute inset-0 -z-10 bg-canvas">
+        <div className="hero-wash-a absolute -left-1/4 top-0 h-[70vh] w-[70vw]" />
+        <div className="hero-wash-b absolute -right-[12%] bottom-0 h-[60vh] w-[60vw]" />
       </div>
 
       <div className="mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-12 px-5 sm:px-8 lg:grid-cols-12 lg:gap-8 lg:px-10">
         {/* ------------------------------------------------------------ copy */}
-        <motion.div style={{ y: copyY, opacity: fade }} className="lg:col-span-6">
+        <motion.div style={{ y: copyY, opacity: fade }} className="will-change-transform lg:col-span-6">
           {/* Live open/closed state, computed in the shop's timezone */}
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: ease.outExpo }}
-            className="mb-7 inline-flex items-center gap-2.5 rounded-full border border-line bg-surface/70 py-1.5 pl-2 pr-4 backdrop-blur-sm"
+            className="mb-7 inline-flex items-center gap-2.5 rounded-full border border-line bg-surface/85 py-1.5 pl-2 pr-4"
           >
             <span
               className={`relative grid h-6 w-6 place-items-center rounded-full ${
@@ -185,7 +189,7 @@ export default function Hero() {
               initial={{ opacity: 0, scale: 0.96 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 1.1, delay: 0.2, ease: ease.outExpo }}
-              className="relative z-10 overflow-hidden rounded-panel shadow-pop"
+              className="relative z-10 overflow-hidden rounded-panel shadow-pop will-change-transform"
             >
               <SmartImage
                 picture={img.shopExteriorDay}
@@ -227,7 +231,7 @@ export default function Hero() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.9, delay: 0.7, ease: ease.outExpo }}
               whileHover={{ y: -4 }}
-              className="absolute -right-3 top-8 z-20 rounded-2xl border border-line bg-surface/90 p-4 shadow-lift backdrop-blur-md sm:-right-6"
+              className="absolute -right-3 top-8 z-20 rounded-2xl border border-line bg-surface p-4 shadow-lift sm:-right-6"
             >
               <p className="eyebrow text-brand">Soda bar</p>
               <p className="mt-1.5 font-display text-2xl font-semibold text-ink">15+</p>

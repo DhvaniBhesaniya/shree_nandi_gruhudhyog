@@ -26,7 +26,6 @@ const aisles = [
 export default function VirtualShopTour() {
   const [dragged, setDragged] = useState(false)
   const viewportRef = useRef(null)
-  const trackRef = useRef(null)
 
   return (
     <Section id="tour" tone="canvas" size="lg">
@@ -46,19 +45,19 @@ export default function VirtualShopTour() {
       >
         <div ref={viewportRef} className="relative cursor-grab overflow-hidden active:cursor-grabbing">
           <motion.div
-            ref={trackRef}
             drag="x"
             dragElastic={0.06}
             dragMomentum={false}
-            // Recomputed on each gesture so it stays correct after a resize or
-            // an orientation change.
-            dragConstraints={() => {
-              const overflow =
-                (trackRef.current?.scrollWidth ?? 0) - (viewportRef.current?.clientWidth ?? 0)
-              return { left: -Math.max(overflow, 0), right: 0 }
-            }}
+            /*
+             * A ref, not a function. `dragConstraints` accepts an object or a
+             * ref to an element — a function is silently ignored, which left
+             * the panorama with no bounds at all and draggable clean off the
+             * screen. Passing the viewport element lets framer measure both and
+             * keep the wider image covering it, and it re-measures on resize.
+             */
+            dragConstraints={viewportRef}
             onDragStart={() => setDragged(true)}
-            className="w-[220%] sm:w-[170%] lg:w-[135%]"
+            className="w-[220%] will-change-transform sm:w-[170%] lg:w-[135%]"
           >
             <SmartImage
               picture={img.panoramicView}

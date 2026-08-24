@@ -244,15 +244,25 @@
 /* ============================================================================
    UTILITIES
    ========================================================================= */
+/*
+ * Paper grain.
+ *
+ * Deliberately no `mix-blend-mode`. Blending forces the browser to re-composite
+ * this layer against everything beneath it on every frame, and it prevents the
+ * parallax layers underneath from being promoted to their own compositor
+ * layers — which made the two sections using it (hero and about) the jankiest
+ * things on the page while scrolling. Plain low opacity looks near-identical and
+ * composites for free.
+ */
 @utility grain {
   position: relative;
   &::after {
     content: "";
     position: absolute;
     inset: 0;
+    z-index: 0;
     pointer-events: none;
-    opacity: 0.035;
-    mix-blend-mode: multiply;
+    opacity: 0.05;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 }
@@ -288,6 +298,39 @@
 /* Fades the edge of a horizontal scroller so cards look like they continue */
 @utility mask-edges {
   mask-image: linear-gradient(to right, transparent, #000 4%, #000 96%, transparent);
+}
+
+/* ============================================================================
+   HERO WASHES
+   Plain classes rather than @utility so the .dark variants below can override
+   them without a specificity fight. Radial gradients stand in for what used to
+   be `filter: blur(100px)` on large solid boxes — same soft falloff, but a
+   gradient rasterises essentially for free where a 100px blur on a 70vw element
+   is one of the more expensive things you can ask a mid-range phone to paint.
+   ========================================================================= */
+.hero-wash-a {
+  background: radial-gradient(closest-side, oklch(0.905 0.065 66 / 0.5), transparent 78%);
+}
+.hero-wash-b {
+  background: radial-gradient(closest-side, oklch(0.902 0.105 92 / 0.34), transparent 78%);
+}
+.dark .hero-wash-a {
+  background: radial-gradient(closest-side, oklch(0.398 0.115 39 / 0.42), transparent 78%);
+}
+.dark .hero-wash-b {
+  background: radial-gradient(closest-side, oklch(0.268 0.078 40 / 0.5), transparent 78%);
+}
+
+/* ============================================================================
+   COMPOSITOR HINTS
+   Long-running transform animations get their own layer so they never trigger
+   main-thread repaints. Applied narrowly — `will-change` on many elements costs
+   memory and can make things worse, so this is only the handful of things that
+   animate continuously.
+   ========================================================================= */
+.marquee-track {
+  will-change: transform;
+  backface-visibility: hidden;
 }
 
 /* ============================================================================

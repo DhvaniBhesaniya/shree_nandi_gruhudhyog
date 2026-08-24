@@ -51,11 +51,22 @@ export default function Navbar() {
       transition={{ duration: 0.7, ease: ease.outExpo, delay: 0.1 }}
       className="fixed inset-x-0 top-0 z-100"
     >
+      {/*
+        Only colour and shadow transition here. A blanket transition (the
+        everything-shorthand this used to have) also animated layout-affecting
+        properties — and note Tailwind's scanner reads comments too, so naming
+        that class here would resurrect the dead utility in the CSS bundle.
+        Animating `backdrop-filter` between two
+        blur radii is one of the most expensive things a fixed header can do —
+        so the blur radius is now identical in both states and never animates.
+        It was also 24px, which re-samples a lot of pixels on every scroll frame
+        on a bar that is permanently on screen.
+      */}
       <div
-        className={`transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+        className={`backdrop-blur-md transition-[background-color,border-color,box-shadow] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
           scrolled
-            ? 'border-b border-line bg-canvas/85 shadow-soft backdrop-blur-xl'
-            : 'border-b border-transparent bg-canvas/40 backdrop-blur-sm'
+            ? 'border-b border-line bg-canvas/92 shadow-soft'
+            : 'border-b border-transparent bg-canvas/55'
         }`}
       >
         <nav

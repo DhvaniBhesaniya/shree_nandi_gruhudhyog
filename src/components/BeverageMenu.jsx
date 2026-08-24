@@ -162,7 +162,10 @@ function SodaPanel() {
             {list.map((s, i) => (
               <motion.li
                 key={s.name}
-                layout
+                // Position-only: a full `layout` animation also measures size
+                // and applies scale correction, which visibly distorts the text
+                // inside each row as the list reflows.
+                layout="position"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
