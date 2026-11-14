@@ -33,11 +33,11 @@ export default function ContactSection() {
     <Section id="contact" tone="canvas" size="lg">
       <SectionHeader
         eyebrow="Get in touch"
-        title="Come by, call, or message us"
+        title="Come by, call, *or message us.*"
         lead="We answer WhatsApp fastest. For bulk orders, mention roughly how much you need and we will send rates."
       />
 
-      <div className="mt-16 grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-14">
+      <div className="mt-14 grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-14">
         <Reveal variants={slideFrom(-1, 40)}>
           <ContactDetails />
         </Reveal>
@@ -122,7 +122,7 @@ function ContactDetails() {
         rel="noopener noreferrer"
         whileHover={{ scale: 1.015 }}
         whileTap={{ scale: 0.985 }}
-        className="mt-4 flex items-center justify-center gap-2.5 rounded-panel bg-leaf-500 px-6 py-4 font-body font-semibold text-white shadow-lift transition-colors hover:bg-leaf-600"
+        className="mt-4 flex items-center justify-center gap-2.5 rounded-full bg-leaf-500 px-6 py-4 font-body font-bold text-white shadow-soft transition-colors hover:bg-leaf-600"
       >
         <MessageCircle size={19} />
         Chat on WhatsApp
@@ -242,11 +242,11 @@ function EnquiryForm() {
     'w-full rounded-2xl border bg-surface px-4 py-3 font-body text-sm text-ink placeholder:text-ink-faint transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-brand/40'
 
   const cls = (name) =>
-    `${field} ${errors[name] ? 'border-chilli-500' : 'border-line focus:border-brand'}`
+    `${field} ${errors[name] ? 'border-chilli-500' : 'border-line-strong focus:border-brand'}`
 
   return (
     <form onSubmit={onSubmit} noValidate className="rounded-panel border border-line bg-surface p-6 sm:p-8">
-      <p className="font-display text-h3 font-semibold text-ink">Send an enquiry</p>
+      <p className="text-h3 text-ink">Send an enquiry</p>
       <p className="mt-1.5 font-body text-sm text-ink-soft">
         This opens WhatsApp with your message ready to send.
       </p>
@@ -340,9 +340,9 @@ function EnquiryForm() {
 
       <motion.button
         type="submit"
-        whileHover={{ scale: 1.015 }}
+        whileHover={{ y: -2 }}
         whileTap={{ scale: 0.985 }}
-        className="mt-7 flex w-full items-center justify-center gap-2.5 rounded-full bg-brand px-6 py-3.5 font-body font-semibold text-on-brand shadow-lift transition-colors hover:bg-brand-hover"
+        className="mt-7 flex w-full items-center justify-center gap-2.5 rounded-full bg-leaf-500 px-6 py-3.5 font-body font-bold text-white shadow-soft transition-colors hover:bg-leaf-600"
       >
         <Send size={17} />
         Send on WhatsApp

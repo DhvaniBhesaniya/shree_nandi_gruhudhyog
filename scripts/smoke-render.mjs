@@ -65,16 +65,10 @@ console.warn = (...a) => warnings.push('WARN: ' + a.join(' '))
 console.error = (...a) => warnings.push('ERROR: ' + a.join(' '))
 
 try {
-  // React and ReactDOM come straight from Node — routing their CJS entries
-  // through Vite's SSR evaluator breaks on `module is not defined`. Vite
-  // externalises react for the app graph, so this is the same instance.
-  const [React, { renderToStaticMarkup }, { default: App }] = await Promise.all([
-    import('react').then((m) => m.default ?? m),
-    import('react-dom/server'),
-    server.ssrLoadModule('/src/App.jsx'),
-  ])
-
-  const html = renderToStaticMarkup(React.createElement(App))
+  // Everything — React, the server renderer and the app — goes through Vite's
+  // resolver via one entry module, so there is exactly one React instance.
+  const { render } = await server.ssrLoadModule('/scripts/smoke-entry.jsx')
+  const html = render()
 
   console.warn = origWarn
   console.error = origErr
@@ -84,7 +78,9 @@ try {
 
   // Spot-check that the real content actually made it into the output.
   const checks = {
-    'hero headline': /Taste/.test(html),
+    'hero headline': /Khoraj/.test(html),
+    'section#homemade': /id="homemade"/.test(html),
+    'video loops': (html.match(/<video/g) || []).length,
     'section#products': /id="products"/.test(html),
     'section#beverages': /id="beverages"/.test(html),
     'section#about': /id="about"/.test(html),

@@ -168,3 +168,11 @@ package-lock.json
 
 # Build output (deployed to gh-pages branch via `npm run deploy`)
 /dist
+
+# Raw phone footage and photos — processed copies live in public/video and src/assets/shop
+/videos-and-pics/
+
+# Runtime folders written by design skills
+/.taste-skill/
+/design-system/
+/shots/

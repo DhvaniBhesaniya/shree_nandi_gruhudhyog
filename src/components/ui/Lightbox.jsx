@@ -83,7 +83,7 @@ export default function Lightbox({ items, index, onClose, onNavigate }) {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.28 }}
       onClick={onClose}
-      className="fixed inset-0 z-100 flex flex-col items-center justify-center bg-clay-950/92 p-4 backdrop-blur-md sm:p-8"
+      className="fixed inset-0 z-100 flex flex-col items-center justify-center bg-indigo-950/94 p-4 sm:p-8"
     >
       {/* Controls sit above the image and stop propagation so a click on them
           doesn't also fire the backdrop's close handler. */}
@@ -127,11 +127,6 @@ export default function Lightbox({ items, index, onClose, onNavigate }) {
           className="max-h-[74vh] w-auto rounded-xl shadow-pop"
           imgClassName="object-contain"
         />
-        {item.alt && (
-          <figcaption className="max-w-2xl text-center font-body text-sm text-white/75">
-            {item.alt}
-          </figcaption>
-        )}
       </motion.figure>
     </motion.div>
   )

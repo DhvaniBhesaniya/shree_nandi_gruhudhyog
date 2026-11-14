@@ -1,6 +1,7 @@
 import { Fragment } from 'react'
 import { motion } from 'framer-motion'
 import { fadeUp, stagger, viewport, wordReveal } from '../../lib/motion'
+import { splitWords, plainText } from '../../lib/text'
 
 /**
  * Scroll-triggered reveal. Thin wrapper so components don't each restate the
@@ -69,12 +70,19 @@ export function RevealItem({ as = 'div', variants = fadeUp, className = '', chil
 /**
  * Heading that reveals word by word, each word sliding up out of a clipped box.
  *
- * Words are split on whitespace and wrapped in inline-blocks so lines still
- * wrap naturally at any width.
+ * Words are wrapped in inline-blocks so lines still wrap naturally at any
+ * width. `emClassName` colours the italic words (marigold on dark grounds).
  */
-export function RevealWords({ text, as = 'h2', className = '', each = 0.045, ...rest }) {
+export function RevealWords({
+  text,
+  as = 'h2',
+  className = '',
+  emClassName = '',
+  each = 0.045,
+  ...rest
+}) {
   const M = motion[as] ?? motion.h2
-  const words = String(text).split(' ')
+  const words = splitWords(text)
 
   return (
     <M
@@ -85,18 +93,15 @@ export function RevealWords({ text, as = 'h2', className = '', each = 0.045, ...
       className={className}
       {...rest}
     >
-      {/* The unsplit string stays available to screen readers; only the visual
-          copy is broken into per-word boxes. */}
-      <span className="sr-only">{text}</span>
+      <span className="sr-only">{plainText(text)}</span>
       <span aria-hidden="true">
-        {words.map((word, i) => (
+        {words.map(({ word, italic }, i) => (
           // The space is a sibling text node rather than sitting inside the
-          // inline-block: a trailing space within an inline-block is trimmed,
-          // which would run every word together.
+          // inline-block: a trailing space within an inline-block is trimmed.
           <Fragment key={`${word}-${i}`}>
-            <span className="inline-block overflow-hidden align-bottom">
+            <span className="inline-block overflow-hidden align-bottom pb-[0.06em]">
               <motion.span variants={wordReveal.word} className="inline-block">
-                {word}
+                {italic ? <em className={emClassName}>{word}</em> : word}
               </motion.span>
             </span>
             {i < words.length - 1 ? ' ' : null}

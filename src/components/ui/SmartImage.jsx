@@ -48,7 +48,7 @@ export default function SmartImage({
 
   return (
     <div
-      className={`relative overflow-hidden ${fill ? 'absolute inset-0' : ''} ${className}`}
+      className={`overflow-hidden ${fill ? 'absolute inset-0' : 'relative'} ${className}`}
       // Reserving the ratio is what keeps these images from shifting the layout
       // as they arrive — the single biggest CLS win on an image-heavy page.
       style={fill || !ratio ? undefined : { aspectRatio: ratio }}

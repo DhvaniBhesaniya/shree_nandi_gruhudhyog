@@ -7,21 +7,9 @@ import { whatsappLink, waMessage, site } from '../lib/site'
 import { slideFrom } from '../lib/motion'
 
 const audiences = [
-  {
-    icon: Store,
-    title: 'Retailers & kirana',
-    body: 'Wholesale rates on our homemade range and on the brands we distribute.',
-  },
-  {
-    icon: Building2,
-    title: 'Offices & pantries',
-    body: 'Standing monthly orders for namkeen, biscuits, tea and cold drinks.',
-  },
-  {
-    icon: PartyPopper,
-    title: 'Weddings & functions',
-    body: 'Bulk farsan, khakhra and sweets boxes, packed and ready to collect.',
-  },
+  { icon: Store, title: 'Retailers & kirana', body: 'Wholesale rates on our homemade range and on the brands we distribute.' },
+  { icon: Building2, title: 'Offices & pantries', body: 'Standing monthly orders for namkeen, biscuits, tea and cold drinks.' },
+  { icon: PartyPopper, title: 'Weddings & functions', body: 'Bulk farsan, khakhra and gift boxes, packed and ready to collect.' },
 ]
 
 const included = [
@@ -31,34 +19,27 @@ const included = [
   'GST invoice provided',
 ]
 
-/**
- * Bulk / wholesale section.
- *
- * New — the previous site had no route for trade enquiries at all, despite
- * wholesale being one of the shop's actual lines of business. Everything funnels
- * to a WhatsApp message pre-written for a rate-list request.
- */
+/** Bulk / wholesale. Everything funnels to a WhatsApp rate-list request. */
 export default function BulkOrders() {
   return (
     <section id="bulk" className="relative overflow-hidden bg-surface-alt py-24 md:py-32">
       <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-14 px-5 sm:px-8 lg:grid-cols-2 lg:gap-16 lg:px-10">
-        {/* ------------------------------------------------------------ copy */}
         <div>
-          <Reveal as="p" className="eyebrow mb-5 flex items-center gap-2.5 text-brand">
-            <span aria-hidden="true" className="h-px w-8 bg-current opacity-50" />
+          <Reveal as="p" className="eyebrow mb-5 flex items-center gap-3 text-brand">
+            <span aria-hidden="true" className="rule-accent" />
             Bulk & wholesale
           </Reveal>
 
           <RevealWords
-            text="Ordering for a shop, an office or a wedding?"
+            text="Ordering for a shop, an office *or a wedding?*"
             as="h2"
-            className="font-display text-h2 font-semibold text-ink"
+            className="text-h2 text-ink"
           />
 
           <Reveal as="p" delay={0.1} className="text-lead mt-5 max-w-xl text-ink-soft">
-            We supply retailers, offices and functions across Gandhinagar and Ahmedabad —
-            and ship larger orders anywhere in India. Tell us roughly what you need and we
-            will send a rate list the same day.
+            We supply retailers, offices and functions across Gandhinagar and Ahmedabad,
+            and ship larger orders anywhere in India. Tell us roughly what you need and
+            we'll send a rate list the same day.
           </Reveal>
 
           <RevealGroup each={0.07} className="mt-8 grid gap-3 sm:grid-cols-2">
@@ -77,37 +58,40 @@ export default function BulkOrders() {
               <MessageCircle size={18} />
               Request a rate list
             </Button>
-            <Button href={`tel:${site.phone}`} variant="outline" size="lg" shine={false}>
+            <Button href={`tel:${site.phone}`} variant="outline" size="lg">
               {site.phoneDisplay}
             </Button>
           </Reveal>
         </div>
 
-        {/* --------------------------------------------------------- audiences */}
-        <div className="space-y-4">
-          <Reveal
-            variants={slideFrom(1, 40)}
-            className="overflow-hidden rounded-panel shadow-lift"
-          >
-            <SmartImage
-              picture={img.biscuitBoxesShelves}
-              alt="Boxed biscuits and cookies stacked on the shop shelves"
-              sizes="(max-width: 1024px) 92vw, 46vw"
-              aspect={16 / 9}
-            />
+        <div className="space-y-3">
+          <Reveal variants={slideFrom(1, 40)} className="grid grid-cols-2 gap-3">
+            <div className="overflow-hidden rounded-card">
+              <SmartImage
+                picture={img.festiveCookieBox}
+                alt="Festive cookie selection box"
+                sizes="(max-width: 1024px) 46vw, 23vw"
+                aspect={1}
+              />
+            </div>
+            <div className="overflow-hidden rounded-card">
+              <SmartImage
+                picture={img.utsavLadooBox}
+                alt="Utsav ladoo and cookie gift box"
+                sizes="(max-width: 1024px) 46vw, 23vw"
+                aspect={1}
+              />
+            </div>
           </Reveal>
 
-          <RevealGroup each={0.08} className="space-y-3">
+          <RevealGroup each={0.08} className="divide-y divide-line overflow-hidden rounded-panel border border-line bg-canvas">
             {audiences.map(({ icon: Icon, title, body }) => (
-              <RevealItem
-                key={title}
-                className="group flex items-start gap-4 rounded-card border border-line bg-canvas p-5 transition-shadow duration-500 hover:shadow-lift"
-              >
-                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-brand-tint text-brand transition-transform duration-500 group-hover:scale-110">
+              <RevealItem key={title} className="group flex items-start gap-4 p-5 transition-colors hover:bg-surface">
+                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-brand-tint text-brand">
                   <Icon size={18} strokeWidth={1.7} />
                 </span>
                 <span>
-                  <span className="block font-body font-semibold text-ink">{title}</span>
+                  <span className="block font-display text-xl text-ink">{title}</span>
                   <span className="mt-0.5 block font-body text-sm text-ink-soft">{body}</span>
                 </span>
               </RevealItem>

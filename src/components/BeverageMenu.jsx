@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { CupSoda, IceCreamCone, MessageCircle } from 'lucide-react'
 import Section, { SectionHeader } from './ui/Section'
 import SmartImage from './ui/SmartImage'
+import Video from './ui/Video'
 import Button from './ui/Button'
 import { img } from '../assets/images'
 import { whatsappLink, waMessage } from '../lib/site'
@@ -28,10 +29,10 @@ const sodas = [
 ]
 
 const iceCream = [
-  { label: 'Chillo Cones', from: 20 },
-  { label: 'Boss Bars', from: 30 },
+  { label: 'Chillo cones', from: 20 },
+  { label: 'Boss bars', from: 30 },
   { label: 'Kulfis', from: 10 },
-  { label: 'Sundae Cups', from: 20 },
+  { label: 'Sundae cups', from: 20 },
 ]
 
 const tabs = [
@@ -40,29 +41,27 @@ const tabs = [
 ]
 
 /**
- * Soda bar + ice cream menu.
+ * Soda bar + ice cream.
  *
- * Prices come straight off the boards in the shop, so the photos of those
- * boards sit alongside as the source of truth. Gujarati names are marked
- * `lang="gu"` so they render in the Gujarati serif rather than a fallback.
+ * Prices come straight off the boards in the shop, and the loops beside the
+ * list show the counter and the freezer they are read from.
  */
 export default function BeverageMenu() {
   const [tab, setTab] = useState('soda')
 
   return (
     <Section id="beverages" tone="alt" size="lg">
-      <SectionHeader
-        eyebrow="At the counter"
-        title="Cold drinks, made to order"
-        lead="Sixteen soda flavours mixed fresh at the counter, and Hocco ice cream in the freezer beside it."
-      />
+      <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
+        <SectionHeader
+          eyebrow="At the counter"
+          title="Sixteen sodas, *mixed while you wait.*"
+          lead="From ₹10. Hocco ice cream in the freezer beside the machine."
+        />
 
-      {/* Tab switcher */}
-      <div className="mt-12 flex justify-center">
         <div
           role="tablist"
           aria-label="Beverage menu"
-          className="inline-flex gap-1 rounded-full border border-line bg-canvas p-1.5 shadow-soft"
+          className="inline-flex shrink-0 gap-1 self-start rounded-full border border-line bg-canvas p-1"
         >
           {tabs.map(({ id, label, icon: Icon }) => (
             <button
@@ -71,7 +70,7 @@ export default function BeverageMenu() {
               aria-selected={tab === id}
               aria-controls={`panel-${id}`}
               onClick={() => setTab(id)}
-              className={`relative flex items-center gap-2 rounded-full px-5 py-2.5 font-body text-sm font-semibold transition-colors duration-300 ${
+              className={`relative isolate flex items-center gap-2 rounded-full px-5 py-2.5 font-body text-sm font-semibold transition-colors duration-300 ${
                 tab === id ? 'text-on-brand' : 'text-ink-soft hover:text-ink'
               }`}
             >
@@ -94,9 +93,9 @@ export default function BeverageMenu() {
           key={tab}
           id={`panel-${tab}`}
           role="tabpanel"
-          initial={{ opacity: 0, y: 16 }}
+          initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -12 }}
+          exit={{ opacity: 0, y: -10 }}
           transition={{ duration: 0.35, ease: ease.outExpo }}
           className="mt-12"
         >
@@ -113,22 +112,20 @@ function SodaPanel() {
   const list = kind === 'All' ? sodas : sodas.filter((s) => s.kind === kind)
 
   return (
-    <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
-      {/* Menu board photos */}
-      <div className="space-y-4 lg:col-span-5">
-        <figure className="overflow-hidden rounded-panel border border-line shadow-lift">
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-8">
+      {/* The counter, moving */}
+      <div className="grid grid-cols-2 gap-3 lg:col-span-5 lg:grid-cols-1 lg:gap-4">
+        <div className="overflow-hidden rounded-panel bg-inverse shadow-lift">
+          <Video name="soda-bar" aspect={4 / 5} />
+        </div>
+        <figure className="overflow-hidden rounded-panel bg-inverse shadow-soft lg:hidden">
+          <Video name="soda-menu" aspect={4 / 5} />
+        </figure>
+        <figure className="hidden overflow-hidden rounded-card border border-line lg:block">
           <SmartImage
             picture={img.sodaMenuBoard}
             alt="The soda menu board in the shop, listing every flavour and price"
-            sizes="(max-width: 1024px) 92vw, 38vw"
-          />
-        </figure>
-        <figure className="overflow-hidden rounded-card border border-line shadow-soft">
-          <SmartImage
-            picture={img.sodaDispenser}
-            alt="The soda dispenser at the counter"
-            sizes="(max-width: 1024px) 92vw, 38vw"
-            aspect={16 / 10}
+            sizes="38vw"
           />
         </figure>
       </div>
@@ -140,10 +137,8 @@ function SodaPanel() {
             <button
               key={k}
               onClick={() => setKind(k)}
-              className={`rounded-full px-4 py-2 font-body text-xs font-semibold transition-colors duration-300 ${
-                kind === k
-                  ? 'bg-ink text-canvas'
-                  : 'border border-line bg-canvas text-ink-soft hover:text-ink'
+              className={`rounded-full px-4 py-2 font-body text-xs font-bold transition-colors duration-300 ${
+                kind === k ? 'bg-ink text-canvas' : 'border border-line bg-canvas text-ink-soft hover:text-ink'
               }`}
             >
               {k}
@@ -154,17 +149,11 @@ function SodaPanel() {
           ))}
         </div>
 
-        <motion.ul
-          layout
-          className="overflow-hidden rounded-panel border border-line bg-canvas"
-        >
+        <motion.ul layout className="overflow-hidden rounded-panel border border-line bg-canvas">
           <AnimatePresence initial={false}>
             {list.map((s, i) => (
               <motion.li
                 key={s.name}
-                // Position-only: a full `layout` animation also measures size
-                // and applies scale correction, which visibly distorts the text
-                // inside each row as the list reflows.
                 layout="position"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -172,24 +161,20 @@ function SodaPanel() {
                 transition={{ duration: 0.22, delay: i * 0.015 }}
                 className="group flex items-baseline gap-3 border-b border-line px-5 py-3.5 last:border-b-0 hover:bg-surface"
               >
-                <span className="font-body text-sm font-medium text-ink">{s.name}</span>
-                <span lang="gu" className="font-body text-xs text-ink-faint">
+                <span className="font-display text-lg text-ink">{s.name}</span>
+                <span lang="gu" className="hidden font-body text-xs text-ink-faint sm:inline">
                   {s.gu}
                 </span>
-                {/* Leader dots — a menu convention, and it keeps the eye on the
-                    right row across a wide column. */}
                 <span
                   aria-hidden="true"
-                  className="mx-1 min-w-4 flex-1 translate-y-[-0.2em] border-b border-dotted border-line-strong"
+                  className="mx-1 min-w-4 flex-1 translate-y-[-0.25em] border-b border-dotted border-line-strong"
                 />
                 {s.kind === 'Special' && (
-                  <span className="rounded-full bg-brand-tint px-2 py-0.5 font-body text-[0.6rem] font-semibold uppercase tracking-wide text-brand">
+                  <span className="rounded-full bg-brand-tint px-2 py-0.5 font-body text-[0.6rem] font-bold uppercase tracking-wide text-brand">
                     Special
                   </span>
                 )}
-                <span className="font-body text-sm font-semibold tabular-nums text-ink">
-                  ₹{s.price}
-                </span>
+                <span className="font-body text-sm font-bold tabular-nums text-ink">₹{s.price}</span>
               </motion.li>
             ))}
           </AnimatePresence>
@@ -201,28 +186,34 @@ function SodaPanel() {
 
 function IceCreamPanel() {
   return (
-    <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-8">
       <div className="lg:col-span-5">
-        <div className="grid grid-cols-2 gap-4">
+        <div className="overflow-hidden rounded-panel bg-inverse shadow-lift">
+          <Video name="freezer" aspect={4 / 5} />
+        </div>
+      </div>
+
+      <div className="lg:col-span-7">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4">
           {iceCream.map((item) => (
             <motion.div
               key={item.label}
               whileHover={{ y: -4 }}
               transition={spring.soft}
-              className="rounded-card border border-line bg-canvas p-5 text-center shadow-soft"
+              className="rounded-card border border-line bg-canvas p-5"
             >
-              <p className="font-display text-h3 font-semibold text-ink">{item.label}</p>
+              <p className="text-h3 text-ink">{item.label}</p>
               <p className="mt-1 font-body text-sm text-ink-faint">from ₹{item.from}</p>
             </motion.div>
           ))}
         </div>
 
-        <div className="mt-4 rounded-card border border-line bg-brand-tint p-6">
+        <div className="mt-4 rounded-panel border border-line bg-canvas p-6 sm:p-8">
           <p className="eyebrow text-brand">Ask for today's</p>
-          <p className="mt-2 font-display text-h3 font-semibold text-ink">
-            Mango Dolly, Kesar Falooda & Strawberry Cheesecake
+          <p className="mt-2 text-h3 text-ink">
+            Mango Dolly, Kesar Falooda and <em>Strawberry Cheesecake</em>
           </p>
-          <p className="mt-2 font-body text-sm text-ink-soft">
+          <p className="mt-2 max-w-md font-body text-sm text-ink-soft">
             Fifty-plus Hocco flavours in the freezer — cones, bars, kulfis, sundaes and
             scooperstar cups.
           </p>
@@ -236,15 +227,15 @@ function IceCreamPanel() {
             Check availability
           </Button>
         </div>
-      </div>
 
-      <figure className="overflow-hidden rounded-panel border border-line shadow-lift lg:col-span-7">
-        <SmartImage
-          picture={img.hoccoIcecreamMenu}
-          alt="The full Hocco ice cream menu with prices — cones, bars, kulfis and sundaes"
-          sizes="(max-width: 1024px) 92vw, 54vw"
-        />
-      </figure>
+        <figure className="mt-4 overflow-hidden rounded-card border border-line">
+          <SmartImage
+            picture={img.hoccoIcecreamMenu}
+            alt="The full Hocco ice cream menu with prices — cones, bars, kulfis and sundaes"
+            sizes="(max-width: 1024px) 92vw, 54vw"
+          />
+        </figure>
+      </div>
     </div>
   )
 }

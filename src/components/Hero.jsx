@@ -1,263 +1,164 @@
 import { useRef } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
-import { MapPin, MessageCircle, ArrowRight, Navigation } from 'lucide-react'
-import SmartImage from './ui/SmartImage'
+import { MessageCircle, Navigation, ArrowDown } from 'lucide-react'
+import Video from './ui/Video'
 import Button from './ui/Button'
-import { img } from '../assets/images'
+import { splitWords, plainText } from '../lib/text'
 import { site, whatsappLink, waMessage } from '../lib/site'
 import { useOpenState } from '../lib/hours'
 import { ease, wordReveal } from '../lib/motion'
 import { scrollToId } from '../lib/hooks'
 
-const HEADLINE = ['Taste', 'the', 'tradition,', 'love', 'every', 'bite']
+const HEADLINE = 'Farsan, khakhra, bakery. *Made fresh in Khoraj.*'
 
-const trust = [
-  'Homemade daily',
-  'No preservatives',
-  '500+ products',
-  'Pan-India delivery',
+const facts = [
+  ['500+', 'products on the shelves'],
+  ['16', 'soda flavours at the counter'],
+  ['Daily', 'homemade batches'],
+  ['Pan-India', 'delivery by courier'],
 ]
 
 /**
- * Editorial split hero.
+ * Cinematic hero.
  *
- * Deliberately not the previous "full-bleed photo behind a dark scrim" pattern:
- * that's the most generic hero on the web, it buried the shop's signboard under
- * a 60% black overlay, and the only wide source photo available is 780px across
- * so it looked soft when stretched. A type-led split instead lets the portrait
- * shop photos be used at their native orientation and sharp.
+ * A muted loop of the aisles, shot in the shop, fills the first screen. The
+ * type sits on an indigo scrim that is solid on the left and clears to the
+ * right, so the shelves read through beside the headline rather than behind
+ * it. On phones a portrait cut of the same footage is used so the pan isn't
+ * cropped to a sliver.
  */
 export default function Hero() {
   const ref = useRef(null)
   const { isOpen, detail } = useOpenState()
 
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ['start start', 'end start'],
-  })
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] })
+  // The copy drifts up and fades as the hero scrolls away; the video stays put.
+  const copyY = useTransform(scrollYProgress, [0, 1], ['0%', '24%'])
+  const fade = useTransform(scrollYProgress, [0, 0.7], [1, 0])
 
-  // Layers drift at different rates as the hero scrolls away. Small distances —
-  // parallax reads as depth up to a point, then starts reading as a glitch.
-  const frontY = useTransform(scrollYProgress, [0, 1], ['0%', '18%'])
-  const backY = useTransform(scrollYProgress, [0, 1], ['0%', '-10%'])
-  const copyY = useTransform(scrollYProgress, [0, 1], ['0%', '32%'])
-  const fade = useTransform(scrollYProgress, [0, 0.75], [1, 0])
+  const words = splitWords(HEADLINE)
 
   return (
     <section
       id="home"
       ref={ref}
-      className="grain relative flex min-h-[100svh] items-center overflow-hidden pt-[calc(var(--nav-h)+2rem)] pb-16 md:pb-24"
+      className="grain relative flex min-h-[100svh] flex-col overflow-hidden bg-indigo-950 text-paper-50"
     >
-      {/* Warm ground. Two offset radial washes give the flat canvas some depth
-          without introducing another image to download.
+      <Video
+        name="aisle-pan"
+        portraitName="shelves-tall"
+        fill
+        priority
+        className="z-0"
+        videoClassName="scale-[1.02]"
+      />
+      <div aria-hidden="true" className="hero-scrim absolute inset-0 z-[1]" />
 
-          These are gradients, not blurred solid boxes. `filter: blur(100px)` on
-          a 70vw element is a genuinely expensive rasterisation on a mid-range
-          phone, and a radial gradient gives the identical soft falloff with no
-          filter at all. */}
-      <div aria-hidden="true" className="absolute inset-0 -z-10 bg-canvas">
-        <div className="hero-wash-a absolute -left-1/4 top-0 h-[70vh] w-[70vw]" />
-        <div className="hero-wash-b absolute -right-[12%] bottom-0 h-[60vh] w-[60vw]" />
-      </div>
-
-      <div className="mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-12 px-5 sm:px-8 lg:grid-cols-12 lg:gap-8 lg:px-10">
-        {/* ------------------------------------------------------------ copy */}
-        <motion.div style={{ y: copyY, opacity: fade }} className="will-change-transform lg:col-span-6">
-          {/* Live open/closed state, computed in the shop's timezone */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: ease.outExpo }}
-            className="mb-7 inline-flex items-center gap-2.5 rounded-full border border-line bg-surface/85 py-1.5 pl-2 pr-4"
-          >
-            <span
-              className={`relative grid h-6 w-6 place-items-center rounded-full ${
-                isOpen ? 'bg-leaf-500/15' : 'bg-clay-400/20'
-              }`}
-            >
-              <span
-                className={`h-2 w-2 rounded-full ${isOpen ? 'bg-leaf-500' : 'bg-clay-400'}`}
+      <motion.div
+        style={{ y: copyY, opacity: fade }}
+        className="relative z-[2] mx-auto flex w-full max-w-7xl flex-1 flex-col justify-end px-5 pb-10 pt-[calc(var(--nav-h)+3rem)] will-change-transform sm:px-8 lg:px-10 lg:pb-14"
+      >
+        {/* Live open/closed state, computed in the shop's timezone */}
+        <motion.div
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: ease.outExpo, delay: 0.15 }}
+          className="mb-8 inline-flex w-fit items-center gap-2.5 rounded-full border border-white/20 bg-indigo-950/40 py-1.5 pl-2 pr-4 backdrop-blur-sm"
+        >
+          <span className="relative grid h-5 w-5 place-items-center">
+            <span className={`h-2 w-2 rounded-full ${isOpen ? 'bg-leaf-400' : 'bg-paper-400'}`} />
+            {isOpen && (
+              <motion.span
+                animate={{ scale: [1, 2.4], opacity: [0.6, 0] }}
+                transition={{ duration: 2.2, repeat: Infinity, ease: 'easeOut' }}
+                className="absolute h-2 w-2 rounded-full bg-leaf-400"
               />
-              {isOpen && (
-                <motion.span
-                  animate={{ scale: [1, 2.2], opacity: [0.6, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: 'easeOut' }}
-                  className="absolute h-2 w-2 rounded-full bg-leaf-500"
-                />
-              )}
-            </span>
-            <span className="font-body text-xs font-semibold text-ink">
-              {isOpen ? 'Open now' : 'Closed'}
-              <span className="ml-1.5 font-normal text-ink-faint">· {detail}</span>
-            </span>
-          </motion.div>
-
-          <h1 className="font-display text-display font-semibold text-ink">
-            <span className="sr-only">{HEADLINE.join(' ')}</span>
-            <motion.span
-              aria-hidden="true"
-              variants={wordReveal.container(0.06)}
-              initial="hidden"
-              animate="visible"
-            >
-              {HEADLINE.map((word, i) => (
-                <span key={word + i} className="inline-block overflow-hidden align-bottom">
-                  <motion.span
-                    variants={wordReveal.word}
-                    className={`inline-block ${i >= 3 ? 'text-gradient' : ''}`}
-                  >
-                    {word}
-                  </motion.span>
-                  {i < HEADLINE.length - 1 ? <span>&nbsp;</span> : null}
-                </span>
-              ))}
-            </motion.span>
-          </h1>
-
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.45, ease: ease.outExpo }}
-            className="text-lead mt-6 max-w-xl text-ink-soft"
-          >
-            Authentic Gujarati farsan, namkeen, khakhra, bhakhri and pickles — our own
-            homemade specialities alongside the brands you trust, in{' '}
-            <span className="font-medium text-ink">Khoraj, Gandhinagar</span>.
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.58, ease: ease.outExpo }}
-            className="mt-9 flex flex-wrap items-center gap-3"
-          >
-            <Button
-              href={whatsappLink(waMessage.general)}
-              variant="whatsapp"
-              size="lg"
-            >
-              <MessageCircle size={18} />
-              Order on WhatsApp
-            </Button>
-            <Button
-              onClick={() => scrollToId('products')}
-              variant="outline"
-              size="lg"
-              shine={false}
-            >
-              Explore products
-              <ArrowRight size={17} className="transition-transform group-hover:translate-x-1" />
-            </Button>
-            <Button
-              href={site.mapsLink}
-              variant="ghost"
-              size="lg"
-              shine={false}
-              className="hidden sm:inline-flex"
-            >
-              <Navigation size={16} />
-              Directions
-            </Button>
-          </motion.div>
-
-          {/* Trust row */}
-          <motion.ul
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.8 }}
-            className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-2.5 border-t border-line pt-6"
-          >
-            {trust.map((t) => (
-              <li
-                key={t}
-                className="flex items-center gap-2 font-body text-xs font-medium text-ink-faint"
-              >
-                <span aria-hidden="true" className="h-1 w-1 rounded-full bg-brand" />
-                {t}
-              </li>
-            ))}
-          </motion.ul>
+            )}
+          </span>
+          <span className="font-body text-xs font-semibold text-paper-50">
+            {isOpen ? 'Open now' : 'Closed'}
+            <span className="ml-1.5 font-medium text-paper-50/60">· {detail}</span>
+          </span>
         </motion.div>
 
-        {/* ----------------------------------------------------------- photos */}
-        <div className="relative lg:col-span-6 lg:pl-8">
-          <div className="relative mx-auto max-w-lg lg:max-w-none">
-            {/* Back layer — the storefront */}
-            <motion.div
-              style={{ y: backY }}
-              initial={{ opacity: 0, scale: 0.96 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1.1, delay: 0.2, ease: ease.outExpo }}
-              className="relative z-10 overflow-hidden rounded-panel shadow-pop will-change-transform"
-            >
-              <SmartImage
-                picture={img.shopExteriorDay}
-                alt={`${site.name} storefront in Khoraj, Gandhinagar`}
-                sizes="(max-width: 1024px) 88vw, 46vw"
-                priority
-                aspect={4 / 5}
-              />
-              {/* Signboard is at the top of this shot, so the caption gradient
-                  only covers the lower third. */}
-              <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-clay-950/80 to-transparent p-5 pt-16">
-                <p className="flex items-center gap-2 font-body text-sm font-medium text-white">
-                  <MapPin size={15} className="shrink-0 text-gold-400" />
-                  PANACHE, Khoraj · Gandhinagar
-                </p>
-              </div>
-            </motion.div>
+        <h1 className="text-display max-w-5xl">
+          <span className="sr-only">{plainText(HEADLINE)}</span>
+          <motion.span
+            aria-hidden="true"
+            variants={wordReveal.container(0.055)}
+            initial="hidden"
+            animate="visible"
+          >
+            {words.map(({ word, italic }, i) => (
+              <span key={word + i} className="inline-block overflow-hidden align-bottom pb-[0.08em]">
+                <motion.span variants={wordReveal.word} className="inline-block">
+                  {italic ? <em className="text-marigold-400">{word}</em> : word}
+                </motion.span>
+                {i < words.length - 1 ? <span>&nbsp;</span> : null}
+              </span>
+            ))}
+          </motion.span>
+        </h1>
 
-            {/* Front layer — product close-up, overlapping */}
-            <motion.div
-              style={{ y: frontY }}
-              initial={{ opacity: 0, y: 40, rotate: -6 }}
-              animate={{ opacity: 1, y: 0, rotate: -4 }}
-              transition={{ duration: 1.1, delay: 0.45, ease: ease.outExpo }}
-              whileHover={{ rotate: 0, scale: 1.03 }}
-              className="absolute -bottom-8 -left-4 z-20 w-36 overflow-hidden rounded-card border-4 border-canvas shadow-pop sm:-left-8 sm:w-44 lg:-left-12 lg:w-52"
-            >
-              <SmartImage
-                picture={img.farsanKhari}
-                alt="Freshly made chakri, khari and cookies — our own homemade range"
-                sizes="220px"
-                aspect={1}
-              />
-            </motion.div>
+        <motion.p
+          initial={{ opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.55, ease: ease.outExpo }}
+          className="text-lead mt-7 max-w-xl text-paper-50/80"
+        >
+          A family gruhudhyog in PANACHE, Khoraj. Our own farsan, chakri, khakhra and
+          cookies, beside five hundred brands, a soda bar and a Hocco freezer.
+        </motion.p>
 
-            {/* Floating spec card */}
-            <motion.div
-              initial={{ opacity: 0, x: 24 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.9, delay: 0.7, ease: ease.outExpo }}
-              whileHover={{ y: -4 }}
-              className="absolute -right-3 top-8 z-20 rounded-2xl border border-line bg-surface p-4 shadow-lift sm:-right-6"
-            >
-              <p className="eyebrow text-brand">Soda bar</p>
-              <p className="mt-1.5 font-display text-2xl font-semibold text-ink">15+</p>
-              <p className="font-body text-xs text-ink-faint">flavours from ₹10</p>
-            </motion.div>
-          </div>
-        </div>
-      </div>
+        <motion.div
+          initial={{ opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.68, ease: ease.outExpo }}
+          className="mt-9 flex flex-wrap items-center gap-3"
+        >
+          <Button href={whatsappLink(waMessage.general)} variant="whatsapp" size="lg">
+            <MessageCircle size={18} />
+            Order on WhatsApp
+          </Button>
+          <Button href={site.mapsLink} variant="outlineLight" size="lg">
+            <Navigation size={16} />
+            Get directions
+          </Button>
+        </motion.div>
 
-      {/* Scroll cue */}
+        {/* Fact row along the bottom edge */}
+        <motion.ul
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.95 }}
+          className="mt-14 grid grid-cols-2 gap-x-6 gap-y-5 border-t border-white/15 pt-6 sm:grid-cols-4"
+        >
+          {facts.map(([n, label]) => (
+            <li key={label} className="flex flex-col">
+              <span className="font-display text-3xl leading-none text-paper-50 sm:text-4xl">{n}</span>
+              <span className="mt-2 font-body text-xs font-medium tracking-wide text-paper-50/55">
+                {label}
+              </span>
+            </li>
+          ))}
+        </motion.ul>
+      </motion.div>
+
       <motion.button
         onClick={() => scrollToId('products')}
         aria-label="Scroll to products"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1.4 }}
+        transition={{ delay: 1.5 }}
         style={{ opacity: fade }}
-        className="absolute bottom-6 left-1/2 hidden -translate-x-1/2 lg:block"
+        className="absolute bottom-6 right-6 z-[2] hidden h-11 w-11 place-items-center rounded-full border border-white/25 text-paper-50/80 lg:grid"
       >
-        <span className="flex h-11 w-7 items-start justify-center rounded-full border border-line-strong p-1.5">
-          <motion.span
-            animate={{ y: [0, 12, 0] }}
-            transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
-            className="h-2 w-1 rounded-full bg-brand"
-          />
-        </span>
+        <motion.span
+          animate={{ y: [0, 4, 0] }}
+          transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
+        >
+          <ArrowDown size={16} />
+        </motion.span>
       </motion.button>
     </section>
   )

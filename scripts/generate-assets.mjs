@@ -46,7 +46,7 @@ const OG_H = 630
 
 // Storefront at night — the lit signboard is the most recognisable shot, and a
 // dark base means the overlaid type stays legible without a heavy scrim.
-const base = await sharp(join(shop, 'shop-exterior-night.jpeg'))
+const base = await sharp(join(shop, 'storefront-evening.jpeg'))
   .resize(OG_W, OG_H, { fit: 'cover', position: 'centre' })
   .modulate({ brightness: 0.62, saturation: 1.12 })
   .blur(2)
@@ -72,19 +72,19 @@ const overlay = Buffer.from(`
 <svg width="${OG_W}" height="${OG_H}" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <linearGradient id="scrim" x1="0" y1="1" x2="0" y2="0">
-      <stop offset="0%"   stop-color="#1a0f05" stop-opacity="0.94"/>
-      <stop offset="55%"  stop-color="#1a0f05" stop-opacity="0.55"/>
-      <stop offset="100%" stop-color="#1a0f05" stop-opacity="0.30"/>
+      <stop offset="0%"   stop-color="#15122a" stop-opacity="0.94"/>
+      <stop offset="55%"  stop-color="#15122a" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#15122a" stop-opacity="0.30"/>
     </linearGradient>
   </defs>
   <rect width="${OG_W}" height="${OG_H}" fill="url(#scrim)"/>
-  <rect x="0" y="${OG_H - 10}" width="${OG_W}" height="10" fill="#e8760c"/>
+  <rect x="0" y="${OG_H - 10}" width="${OG_W}" height="10" fill="#e5a33b"/>
 
   <text x="86" y="392" font-family="Georgia, 'Times New Roman', serif"
         font-size="74" font-weight="700" fill="#ffffff">Shree Nandi Gruhudhyog</text>
 
   <text x="86" y="452" font-family="Georgia, serif" font-size="33"
-        font-style="italic" fill="#f5c842">Taste the tradition, love every bite</text>
+        font-style="italic" fill="#f0b85a">Taste the tradition, love every bite</text>
 
   <text x="86" y="524" font-family="Helvetica, Arial, sans-serif" font-size="26"
         font-weight="600" fill="#ffffff" opacity="0.82"

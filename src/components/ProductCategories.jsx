@@ -9,66 +9,62 @@ import { whatsappLink, waMessage } from '../lib/site'
 import { scrollToId } from '../lib/hooks'
 import { ease, scaleIn } from '../lib/motion'
 
+/*
+ * Eight shelves of the shop. Photographed on site — every picture here is of
+ * the thing it names. The first card is the homemade range and takes the
+ * widest slot because it is what the shop is for.
+ */
 const categories = [
   {
-    name: 'Namkeen & Farsan',
-    blurb: 'Gathiya, chevdo, sev and the crunchy Gujarati farsan we make fresh.',
-    picture: img.farsan,
-    feature: true,
+    name: 'Namkeen & farsan',
+    gu: 'નમકીન',
+    blurb: 'Gathiya, chevdo, sev, chakri and bhakarwadi — packed here, in small batches.',
+    picture: img.homemadeFarsanPackets,
+    span: 'lg:col-span-6 lg:row-span-2',
+    aspect: 4 / 5,
   },
-  { name: 'Khakhra & Bhakhri', blurb: 'Methi, jeera, masala — thin and crisp.', picture: img.khakhra },
-  { name: 'Pickles & Achaar', blurb: 'Mango, lime and mixed, tangy as it should be.', picture: img.pickles },
-  { name: 'Chocolates & Sweets', blurb: 'Wafer rolls and premium confectionery.', picture: img.chocolateBox },
-  { name: 'Chips & Snacks', blurb: 'Cornitos, dry samosa, peanuts and munchies.', picture: img.cornitosChips },
-  { name: 'Wafers & Biscuits', blurb: 'Potato wafers, banana chips, khari and biscuits.', picture: img.wafersAndChocolates },
-  { name: 'Soda & Cold Drinks', blurb: '15+ soda flavours plus chilled bottles.', picture: img.sodaDispenser },
-  { name: 'Bakery & Cookies', blurb: 'Cookies, cake rusk and everyday bakery.', picture: img.biscuitBoxesShelves },
+  { name: 'Khakhra & bhakhri', gu: 'ખાખરા', blurb: 'Masala, methi, jeera and sada — thin and crisp.', picture: img.masalaKhakhraCloseup, span: 'lg:col-span-3', aspect: 4 / 5 },
+  { name: 'Bakery & cookies', gu: 'બેકરી', blurb: 'Atta cookies, stick cookies, khari and rusk.', picture: img.cravityStickCookies, span: 'lg:col-span-3', aspect: 4 / 5 },
+  { name: 'Festive & gift boxes', gu: 'ઉત્સવ', blurb: 'Cookie selections and ladoo boxes for Diwali and weddings.', picture: img.festiveCookieBox, span: 'lg:col-span-3', aspect: 4 / 5 },
+  { name: 'Pickles & achaar', gu: 'અથાણા', blurb: 'Mango, lime and mixed, from the brands we trust.', picture: img.pickles, span: 'lg:col-span-3', aspect: 4 / 5 },
+  { name: 'Chips & wafers', gu: 'વેફર', blurb: 'Banana wafers, Mexican chilli chips, Cornitos and more.', picture: img.bananaWafers, span: 'lg:col-span-4', aspect: 4 / 3 },
+  { name: 'Soda bar & ice cream', gu: 'સોડા', blurb: 'Sixteen sodas mixed at the counter, Hocco in the freezer.', picture: img.hoccoFreezer, span: 'lg:col-span-4', aspect: 4 / 3 },
+  { name: 'Everyday brands', gu: 'બ્રાન્ડ', blurb: 'Biscuits, noodles, mamra, sauces — five hundred lines.', picture: img.biscuitWall, span: 'lg:col-span-4', aspect: 4 / 3 },
 ]
 
-/**
- * Category grid.
- *
- * Overlay cards rather than the previous image-above-a-white-box pattern: the
- * photography carries the section, and letting type sit on the image is what
- * separates a considered grid from a stock template. The first card spans two
- * columns to break the otherwise uniform 4-up rhythm.
- */
 export default function ProductCategories() {
   return (
     <Section id="products" tone="canvas" size="lg">
-      <SectionHeader
-        eyebrow="What we stock"
-        title="Everything under one roof"
-        lead="From farsan we fry ourselves to the brands you already trust — over 500 items across the shop."
-      />
+      <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
+        <SectionHeader
+          eyebrow="What we stock"
+          title="Everything a Gujarati kitchen reaches for, *under one roof.*"
+          lead="Our own homemade range on the same shelves as the brands you already buy — over five hundred items."
+        />
+        <Button onClick={() => scrollToId('gallery')} variant="outline" size="md" className="shrink-0">
+          See every shelf
+          <ArrowUpRight size={16} />
+        </Button>
+      </div>
 
       <RevealGroup
-        each={0.07}
-        className="mt-16 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4"
+        each={0.06}
+        className="mt-14 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-12 lg:gap-4"
       >
         {categories.map((cat) => (
-          <RevealItem
-            key={cat.name}
-            variants={scaleIn}
-            className={cat.feature ? 'sm:col-span-2' : ''}
-          >
+          <RevealItem key={cat.name} variants={scaleIn} className={cat.span}>
             <CategoryCard {...cat} />
           </RevealItem>
         ))}
       </RevealGroup>
 
-      {/* Section-level fallback for anything not pictured */}
-      <div className="mt-14 flex flex-col items-center gap-4 rounded-panel border border-line bg-surface p-8 text-center sm:flex-row sm:justify-between sm:text-left">
-        <div>
-          <p className="font-display text-h3 font-semibold text-ink">
-            Looking for something specific?
-          </p>
-          <p className="mt-1.5 font-body text-sm text-ink-soft">
-            Message us and we'll tell you straight away if it's in stock.
-          </p>
-        </div>
-        <Button href={whatsappLink(waMessage.general)} variant="whatsapp" size="lg">
-          <MessageCircle size={18} />
+      <div className="mt-12 flex flex-col items-start gap-5 border-t border-line pt-8 sm:flex-row sm:items-center sm:justify-between">
+        <p className="max-w-xl font-body text-ink-soft">
+          Looking for something not pictured? Message the shop and you'll have an answer
+          on stock and price in minutes.
+        </p>
+        <Button href={whatsappLink(waMessage.general)} variant="whatsapp" size="md">
+          <MessageCircle size={17} />
           Ask on WhatsApp
         </Button>
       </div>
@@ -76,51 +72,50 @@ export default function ProductCategories() {
   )
 }
 
-function CategoryCard({ name, blurb, picture, feature }) {
+function CategoryCard({ name, gu, blurb, picture, aspect }) {
   return (
-    <motion.button
-      onClick={() => scrollToId('gallery')}
+    <motion.a
+      href={whatsappLink(waMessage.category(name))}
+      target="_blank"
+      rel="noopener noreferrer"
       whileHover="hover"
       whileFocus="hover"
       initial="rest"
       animate="rest"
-      className="group relative block h-full w-full overflow-hidden rounded-card text-left shadow-soft transition-shadow duration-500 hover:shadow-pop"
+      variants={{ rest: { y: 0 }, hover: { y: -4 } }}
+      transition={{ duration: 0.4, ease: ease.outExpo }}
+      className="group relative block h-full w-full overflow-hidden rounded-card bg-inverse text-left shadow-soft transition-shadow duration-500 hover:shadow-lift"
     >
       <SmartImage
         picture={picture}
         alt={name}
-        sizes={feature ? '(max-width: 640px) 92vw, (max-width: 1024px) 92vw, 46vw' : '(max-width: 640px) 92vw, (max-width: 1024px) 46vw, 23vw'}
-        aspect={feature ? 16 / 11 : 4 / 5}
-        imgClassName="transition-transform duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06]"
+        sizes="(max-width: 640px) 92vw, (max-width: 1024px) 46vw, 33vw"
+        aspect={aspect}
+        className="h-full"
+        imgClassName="transition-transform duration-[1100ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]"
       />
 
-      {/* Scrim only where the type sits, so the photo stays bright above it */}
+      {/* Indigo scrim only where the type sits */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 bg-gradient-to-t from-clay-950/88 via-clay-950/25 to-transparent"
+        className="absolute inset-0 bg-gradient-to-t from-indigo-950/90 via-indigo-950/30 to-transparent"
       />
 
       <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-5">
         <div className="min-w-0">
-          <h3 className="font-display text-h3 font-semibold text-white">{name}</h3>
-          {/*
-            Always visible, for two reasons. Animating `height: 0 -> auto` is a
-            layout animation — it reflows the card contents on every frame of the
-            hover, which is not something the compositor can take over. And it
-            was gated behind hover, so on a phone the description was simply
-            never readable at all.
-          */}
-          <p className="mt-1.5 font-body text-sm text-white/75">{blurb}</p>
+          <p lang="gu" className="font-display text-sm text-marigold-400">
+            {gu}
+          </p>
+          <h3 className="mt-1 text-h3 text-paper-50">{name}</h3>
+          <p className="mt-1.5 font-body text-sm leading-snug text-paper-50/70">{blurb}</p>
         </div>
-
         <motion.span
-          variants={{ rest: { scale: 0.85, opacity: 0.7 }, hover: { scale: 1, opacity: 1 } }}
-          transition={{ duration: 0.35, ease: ease.outExpo }}
-          className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white/15 text-white backdrop-blur-sm"
+          variants={{ rest: { opacity: 0.6, x: 0 }, hover: { opacity: 1, x: 2 } }}
+          className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-white/25 text-paper-50"
         >
-          <ArrowUpRight size={17} />
+          <ArrowUpRight size={16} />
         </motion.span>
       </div>
-    </motion.button>
+    </motion.a>
   )
 }

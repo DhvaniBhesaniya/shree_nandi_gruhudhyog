@@ -8,13 +8,21 @@ import { ease, spring } from '../lib/motion'
 
 const links = [
   { label: 'Products', id: 'products' },
-  { label: 'Beverages', id: 'beverages' },
-  { label: 'Our Story', id: 'about' },
+  { label: 'Our kitchen', id: 'homemade' },
+  { label: 'Soda bar', id: 'beverages' },
+  { label: 'Our story', id: 'about' },
   { label: 'Gallery', id: 'gallery' },
-  { label: 'Bulk Orders', id: 'bulk' },
+  { label: 'Bulk orders', id: 'bulk' },
   { label: 'Contact', id: 'contact' },
 ]
 
+/**
+ * Fixed header.
+ *
+ * Sits transparent over the dark hero with light type, then condenses onto a
+ * canvas-coloured bar once the visitor scrolls. Only colour and shadow
+ * transition — the blur radius never animates, which is the expensive case.
+ */
 export default function Navbar() {
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
@@ -24,14 +32,11 @@ export default function Navbar() {
   const ids = useMemo(() => links.map((l) => l.id), [])
   const active = useActiveSection(ids)
 
-  // Condense the bar once the visitor leaves the hero.
-  useMotionValueEvent(scrollY, 'change', (v) => setScrolled(v > 24))
+  useMotionValueEvent(scrollY, 'change', (v) => setScrolled(v > 40))
 
   useScrollLock(open)
   useEscapeKey(open, () => setOpen(false))
 
-  // Close the drawer if the viewport grows past the mobile breakpoint while
-  // it's open — otherwise it stays mounted and keeps scroll locked.
   useEffect(() => {
     const mq = window.matchMedia('(min-width: 1024px)')
     const onChange = (e) => e.matches && setOpen(false)
@@ -44,6 +49,11 @@ export default function Navbar() {
     scrollToId(id)
   }
 
+  // Over the hero the bar is transparent on indigo, so the type is light.
+  const onDark = !scrolled && !open
+  const textMain = onDark ? 'text-paper-50' : 'text-ink'
+  const textSoft = onDark ? 'text-paper-50/70 hover:text-paper-50' : 'text-ink-soft hover:text-ink'
+
   return (
     <motion.header
       initial={{ y: -80 }}
@@ -51,22 +61,11 @@ export default function Navbar() {
       transition={{ duration: 0.7, ease: ease.outExpo, delay: 0.1 }}
       className="fixed inset-x-0 top-0 z-100"
     >
-      {/*
-        Only colour and shadow transition here. A blanket transition (the
-        everything-shorthand this used to have) also animated layout-affecting
-        properties — and note Tailwind's scanner reads comments too, so naming
-        that class here would resurrect the dead utility in the CSS bundle.
-        Animating `backdrop-filter` between two
-        blur radii is one of the most expensive things a fixed header can do —
-        so the blur radius is now identical in both states and never animates.
-        It was also 24px, which re-samples a lot of pixels on every scroll frame
-        on a bar that is permanently on screen.
-      */}
       <div
-        className={`backdrop-blur-md transition-[background-color,border-color,box-shadow] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-          scrolled
-            ? 'border-b border-line bg-canvas/92 shadow-soft'
-            : 'border-b border-transparent bg-canvas/55'
+        className={`transition-[background-color,border-color,box-shadow] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          scrolled || open
+            ? 'border-b border-line bg-canvas/92 shadow-soft backdrop-blur-md'
+            : 'border-b border-transparent bg-transparent'
         }`}
       >
         <nav
@@ -78,6 +77,7 @@ export default function Navbar() {
             href="#home"
             onClick={(e) => {
               e.preventDefault()
+              setOpen(false)
               window.scrollTo({ top: 0, behavior: 'smooth' })
             }}
             className="group flex items-center gap-3"
@@ -85,24 +85,30 @@ export default function Navbar() {
             <motion.img
               src={img.logo?.img.src}
               srcSet={img.logo?.sources?.webp}
-              sizes="48px"
-              width={48}
-              height={48}
+              sizes="44px"
+              width={44}
+              height={44}
               alt=""
-              whileHover={{ rotate: -6, scale: 1.06 }}
+              whileHover={{ rotate: -8 }}
               transition={spring.bouncy}
-              className="h-10 w-10 rounded-full object-cover ring-1 ring-line md:h-11 md:w-11"
+              className="h-10 w-10 rounded-full object-cover ring-1 ring-white/20"
             />
             <span className="flex flex-col leading-none">
-              <span className="font-display text-base font-semibold tracking-tight text-ink md:text-lg">
+              <span className={`font-display text-xl tracking-tight transition-colors ${textMain}`}>
                 Shree Nandi
               </span>
-              <span className="eyebrow mt-1 text-[0.6rem] text-ink-faint">Gruhudhyog</span>
+              <span
+                className={`eyebrow mt-1 text-[0.58rem] transition-colors ${
+                  onDark ? 'text-marigold-400' : 'text-brand'
+                }`}
+              >
+                Gruhudhyog
+              </span>
             </span>
           </a>
 
           {/* Desktop links */}
-          <ul className="hidden items-center gap-1 lg:flex">
+          <ul className="hidden items-center gap-0.5 lg:flex">
             {links.map((link) => {
               const isActive = active === link.id
               return (
@@ -114,20 +120,19 @@ export default function Navbar() {
                       go(link.id)
                     }}
                     aria-current={isActive ? 'true' : undefined}
-                    className={`relative block rounded-full px-3.5 py-2 font-body text-sm font-medium transition-colors duration-300 ${
-                      isActive ? 'text-brand' : 'text-ink-soft hover:text-ink'
+                    className={`relative block px-3 py-2 font-body text-[0.84rem] font-semibold transition-colors duration-300 ${
+                      isActive ? textMain : textSoft
                     }`}
                   >
-                    {/* One shared element slides between links rather than each
-                        fading its own background in and out. */}
+                    {link.label}
+                    {/* One shared underline slides between links */}
                     {isActive && (
                       <motion.span
                         layoutId="nav-active"
                         transition={spring.soft}
-                        className="absolute inset-0 -z-10 rounded-full bg-brand-tint"
+                        className="absolute inset-x-3 -bottom-0.5 h-0.5 bg-accent"
                       />
                     )}
-                    {link.label}
                   </a>
                 </li>
               )
@@ -135,14 +140,14 @@ export default function Navbar() {
           </ul>
 
           {/* Actions */}
-          <div className="flex items-center gap-2">
-            <ThemeToggle isDark={isDark} onToggle={toggle} />
+          <div className="flex items-center gap-1.5">
+            <ThemeToggle isDark={isDark} onToggle={toggle} onDark={onDark} />
 
             <motion.a
               href={whatsappLink(waMessage.general)}
               target="_blank"
               rel="noopener noreferrer"
-              whileHover={{ scale: 1.04 }}
+              whileHover={{ y: -2 }}
               whileTap={{ scale: 0.96 }}
               transition={spring.snappy}
               className="hidden items-center gap-2 rounded-full bg-leaf-500 px-4 py-2.5 font-body text-sm font-semibold text-white shadow-soft transition-colors hover:bg-leaf-600 sm:inline-flex"
@@ -156,7 +161,9 @@ export default function Navbar() {
               aria-label={open ? 'Close menu' : 'Open menu'}
               aria-expanded={open}
               aria-controls="mobile-menu"
-              className="rounded-full p-2.5 text-ink transition-colors hover:bg-surface-alt lg:hidden"
+              className={`rounded-full p-2.5 transition-colors lg:hidden ${textMain} ${
+                onDark ? 'hover:bg-white/10' : 'hover:bg-surface-alt'
+              }`}
             >
               {open ? <X size={22} /> : <Menu size={22} />}
             </button>
@@ -173,23 +180,23 @@ export default function Navbar() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setOpen(false)}
-              className="fixed inset-0 -z-10 bg-clay-950/40 backdrop-blur-sm lg:hidden"
+              className="fixed inset-0 -z-10 bg-indigo-950/50 lg:hidden"
             />
             <motion.div
               id="mobile-menu"
-              initial={{ opacity: 0, y: -12 }}
+              initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -12 }}
-              transition={{ duration: 0.32, ease: ease.outExpo }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.3, ease: ease.outExpo }}
               className="mx-3 overflow-hidden rounded-panel border border-line bg-canvas shadow-pop lg:hidden"
             >
               <ul className="flex flex-col p-3">
                 {links.map((link, i) => (
                   <motion.li
                     key={link.id}
-                    initial={{ opacity: 0, x: -12 }}
+                    initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.05 + i * 0.045, ease: ease.outExpo }}
+                    transition={{ delay: 0.04 + i * 0.04, ease: ease.outExpo }}
                   >
                     <a
                       href={`#${link.id}`}
@@ -197,14 +204,12 @@ export default function Navbar() {
                         e.preventDefault()
                         go(link.id)
                       }}
-                      className={`flex items-center justify-between rounded-2xl px-4 py-3.5 font-body text-base font-medium transition-colors ${
-                        active === link.id
-                          ? 'bg-brand-tint text-brand'
-                          : 'text-ink hover:bg-surface-alt'
+                      className={`flex items-center justify-between rounded-card px-4 py-3.5 font-display text-2xl transition-colors ${
+                        active === link.id ? 'bg-brand-tint text-brand' : 'text-ink hover:bg-surface-alt'
                       }`}
                     >
                       {link.label}
-                      <span aria-hidden="true" className="text-ink-faint">
+                      <span aria-hidden="true" className="font-body text-sm text-ink-faint">
                         →
                       </span>
                     </a>
@@ -218,14 +223,14 @@ export default function Navbar() {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => setOpen(false)}
-                  className="flex items-center justify-center gap-2 rounded-2xl bg-leaf-500 px-5 py-3.5 font-body font-semibold text-white"
+                  className="flex items-center justify-center gap-2 rounded-full bg-leaf-500 px-5 py-3.5 font-body font-semibold text-white"
                 >
                   <MessageCircle size={18} />
                   Order on WhatsApp
                 </a>
                 <a
                   href={`tel:${site.phone}`}
-                  className="mt-2 flex items-center justify-center rounded-2xl px-5 py-3 font-body text-sm font-medium text-ink-soft"
+                  className="mt-2 flex items-center justify-center rounded-full px-5 py-3 font-body text-sm font-semibold text-ink-soft"
                 >
                   {site.phoneDisplay}
                 </a>
@@ -238,12 +243,14 @@ export default function Navbar() {
   )
 }
 
-function ThemeToggle({ isDark, onToggle }) {
+function ThemeToggle({ isDark, onToggle, onDark }) {
   return (
     <button
       onClick={onToggle}
       aria-label={`Switch to ${isDark ? 'light' : 'dark'} theme`}
-      className="relative grid h-10 w-10 place-items-center overflow-hidden rounded-full text-ink-soft transition-colors hover:bg-surface-alt hover:text-ink"
+      className={`relative grid h-10 w-10 place-items-center overflow-hidden rounded-full transition-colors ${
+        onDark ? 'text-paper-50/80 hover:bg-white/10 hover:text-paper-50' : 'text-ink-soft hover:bg-surface-alt hover:text-ink'
+      }`}
     >
       <AnimatePresence initial={false} mode="wait">
         <motion.span

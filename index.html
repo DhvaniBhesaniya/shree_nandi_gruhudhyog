@@ -19,8 +19,8 @@
       }
     </script>
 
-    <meta name="theme-color" content="#fdfcfb" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#1c1613" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f9f7f2" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#15122a" media="(prefers-color-scheme: dark)" />
 
     <link rel="icon" href="/favicon-32.png" sizes="32x32" />
     <link rel="icon" href="/favicon-16.png" sizes="16x16" />
@@ -30,7 +30,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,500..700,0..100,0..1&family=Inter:wght@400..600&family=Noto+Serif+Gujarati:wght@400..700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700;800&family=Noto+Serif+Gujarati:wght@400..700&display=swap"
     />
 
     <!--
@@ -55,13 +55,13 @@
       #splash {
         /* Keep in step with INTRO_MS in src/lib/splash.js */
         --sp-intro: 5000ms;
-        --sp-bg: #fdfcfb;
-        --sp-ink: #3d2f24;
-        --sp-soft: #8a7563;
-        --sp-brand: #e0700c;
-        --sp-gold: #dfa524;
-        --sp-line: rgba(61, 47, 36, 0.16);
-        --sp-track: rgba(61, 47, 36, 0.1);
+        --sp-bg: #f9f7f2;
+        --sp-ink: #15122a;
+        --sp-soft: #5c5894;
+        --sp-brand: #e5a33b;
+        --sp-gold: #4a45a3;
+        --sp-line: rgba(21, 18, 42, 0.16);
+        --sp-track: rgba(21, 18, 42, 0.1);
         position: fixed;
         inset: 0;
         z-index: 9999;
@@ -70,19 +70,19 @@
         align-items: center;
         justify-content: center;
         background: var(--sp-bg);
-        font-family: Georgia, "Times New Roman", serif;
+        font-family: "Iowan Old Style", Georgia, "Times New Roman", serif;
         opacity: 1;
         /* Opacity only — a composited fade that cannot jank */
         transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.6s;
       }
       html.dark #splash {
-        --sp-bg: #1b1512;
-        --sp-ink: #f4efe9;
-        --sp-soft: #a08d7c;
-        --sp-brand: #f0913a;
-        --sp-gold: #f0c65a;
-        --sp-line: rgba(244, 239, 233, 0.18);
-        --sp-track: rgba(244, 239, 233, 0.12);
+        --sp-bg: #15122a;
+        --sp-ink: #f9f7f2;
+        --sp-soft: #a9a6c9;
+        --sp-brand: #f0b85a;
+        --sp-gold: #8f8ad6;
+        --sp-line: rgba(249, 247, 242, 0.18);
+        --sp-track: rgba(249, 247, 242, 0.12);
       }
 
       /* Warm ground wash. Opacity-only breathing: scaling a 78vmin gradient
@@ -95,7 +95,7 @@
         width: 72vmin;
         height: 72vmin;
         border-radius: 50%;
-        background: radial-gradient(circle, rgba(224, 112, 12, 0.14), transparent 68%);
+        background: radial-gradient(circle, rgba(229, 163, 59, 0.16), transparent 68%);
         opacity: 0.75;
         will-change: opacity;
         animation: sp-glow 5s ease-in-out infinite;
@@ -194,7 +194,7 @@
         height: 33px;
         margin-top: 9px;
         border-radius: 50% 50% 45% 45% / 62% 62% 38% 38%;
-        background: linear-gradient(to bottom, var(--sp-gold), rgba(223, 165, 36, 0));
+        background: linear-gradient(to bottom, var(--sp-brand), rgba(229, 163, 59, 0));
         transform-origin: top center;
         transform: scaleY(0.14);
         opacity: 0;
@@ -221,7 +221,7 @@
       .sp-name {
         margin: 0;
         font-size: clamp(1.15rem, 4.4vw, 1.5rem);
-        font-weight: 700;
+        font-weight: 400;
         color: var(--sp-ink);
       }
       .sp-gu {
