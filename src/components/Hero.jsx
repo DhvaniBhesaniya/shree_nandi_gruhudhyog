@@ -13,7 +13,7 @@ const HEADLINE = 'Farsan, khakhra, bakery. *Made fresh in Khoraj.*'
 
 const facts = [
   ['500+', 'products on the shelves'],
-  ['16', 'soda flavours at the counter'],
+  ['20', 'soda flavours at the counter'],
   ['Daily', 'homemade batches'],
   ['Pan-India', 'delivery by courier'],
 ]

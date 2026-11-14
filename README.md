@@ -97,7 +97,7 @@ outputs you want redone, and run `npm run clips`. FFmpeg comes from the
 | `aisle-pan-2` | "Walk the aisles" band |
 | `homemade-tubs` | "From our own kitchen" |
 | `brand-mark` | "Our story" |
-| `soda-bar`, `soda-menu`, `freezer` | Soda bar and ice cream |
+| `soda-bar`, `freezer` | Soda bar and ice cream |
 
 ---
 

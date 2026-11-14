@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { CupSoda, IceCreamCone, MessageCircle } from 'lucide-react'
+import { CupSoda, IceCreamCone, Croissant, MessageCircle } from 'lucide-react'
 import Section, { SectionHeader } from './ui/Section'
 import SmartImage from './ui/SmartImage'
 import Video from './ui/Video'
@@ -9,23 +9,42 @@ import { img } from '../assets/images'
 import { whatsappLink, waMessage } from '../lib/site'
 import { ease, spring } from '../lib/motion'
 
+/*
+ * Read off the new soda board at the counter (November 2026). Regular sodas
+ * first, then the "special flavour & mix" section, in the board's own order.
+ */
 const sodas = [
-  { name: 'Saadi Soda', gu: 'સાદી સોડા', price: 10, kind: 'Regular' },
-  { name: 'Jeera Masala', gu: 'જીરા મસાલા', price: 15, kind: 'Regular' },
-  { name: 'Orange Soda', gu: 'ઓરેન્જ સોડા', price: 15, kind: 'Regular' },
-  { name: 'Pineapple Soda', gu: 'પાઇનએપલ સોડા', price: 15, kind: 'Regular' },
-  { name: 'Mango Soda', gu: 'મેંગો સોડા', price: 15, kind: 'Regular' },
-  { name: 'Cola Soda', gu: 'કોલા સોડા', price: 15, kind: 'Regular' },
-  { name: 'Fruit Beer', gu: 'ફ્રૂટ બિયર', price: 15, kind: 'Regular' },
-  { name: '7up / Sprite', gu: 'સેવન અપ / સ્પ્રાઇટ', price: 15, kind: 'Regular' },
-  { name: 'Limbu Soda', gu: 'લીંબુ સોડા', price: 20, kind: 'Special' },
-  { name: 'Limbu Sharbat', gu: 'લીંબુ શરબત', price: 25, kind: 'Special' },
-  { name: 'Chaas Soda', gu: 'છાસ સોડા', price: 25, kind: 'Special' },
-  { name: 'Sing Soda', gu: 'સિંગ સોડા', price: 25, kind: 'Special' },
-  { name: 'Pudina Soda', gu: 'પુદીના સોડા', price: 25, kind: 'Special' },
-  { name: 'Pudina Adrak Limbu', gu: 'પુદીના આદુ લીંબુ સોડા', price: 25, kind: 'Special' },
-  { name: 'Phulzar Green Soda', gu: 'ફૂલઝર ગ્રીન સોડા', price: 25, kind: 'Special' },
-  { name: 'Spicy Green Chilli', gu: 'સ્પાઈસી ગ્રીન ચીલી સોડા', price: 25, kind: 'Special' },
+  { name: 'Sadi Soda', gu: 'સાદી સોડા', price: 10, kind: 'Regular' },
+  { name: 'Limbu Soda', gu: 'લીંબુ સોડા', price: 20, kind: 'Regular' },
+  { name: 'Limbu Sharbat', gu: 'લીંબુ શરબત', price: 25, kind: 'Regular' },
+  { name: 'Cola Soda', gu: 'કોલા સોડા', price: 20, kind: 'Regular' },
+  { name: 'Orange Soda', gu: 'ઓરેન્જ સોડા', price: 20, kind: 'Regular' },
+  { name: 'Mango Soda', gu: 'મેંગો સોડા', price: 20, kind: 'Regular' },
+  { name: 'Sprite Soda', gu: 'સ્પ્રાઇટ સોડા', price: 20, kind: 'Regular' },
+  { name: 'Vimto Soda', gu: 'વિમ્ટો સોડા', price: 20, kind: 'Regular' },
+  { name: 'Litchi Soda', gu: 'લીચી સોડા', price: 20, kind: 'Regular' },
+  { name: 'Red Jamfal Soda', gu: 'રેડ જામફળ સોડા', price: 20, kind: 'Regular' },
+  { name: 'Pineapple Soda', gu: 'પાઇનએપલ સોડા', price: 20, kind: 'Regular' },
+  { name: 'Kala Khatta', gu: 'કાલા ખટ્ટા', price: 20, kind: 'Regular' },
+  { name: 'Fruit Beer', gu: 'ફ્રૂટ બિયર', price: 20, kind: 'Special' },
+  { name: 'Jeera Masala Soda', gu: 'જીરા મસાલા સોડા', price: 20, kind: 'Special' },
+  { name: 'Sing Soda', gu: 'સિંગ સોડા', price: 30, kind: 'Special' },
+  { name: 'Phuljar Green Soda', gu: 'ફૂલઝર ગ્રીન સોડા', price: 30, kind: 'Special' },
+  { name: 'Green Chilly Soda', gu: 'ગ્રીન ચીલી સોડા', price: 30, kind: 'Special' },
+  { name: 'Chaas Soda', gu: 'છાશ સોડા', price: 25, kind: 'Special' },
+  { name: 'Fudina Soda', gu: 'ફુદીના સોડા', price: 25, kind: 'Special' },
+  { name: 'Fudina Aadu Limbu Soda', gu: 'ફુદીના આદુ લીંબુ સોડા', price: 30, kind: 'Special' },
+]
+
+/* The puff board beside it. Baked in the shop, served hot. */
+const puffs = [
+  { name: 'Regular puff', price: 25 },
+  { name: 'Chinese puff', price: 30 },
+  { name: 'Sev puff', price: 40 },
+  { name: 'Cheese puff', price: 45 },
+  { name: 'Cheese Maggi puff', price: 50 },
+  { name: 'Cheese Schezwan puff', price: 50 },
+  { name: 'Cheese sing puff', price: 55 },
 ]
 
 const iceCream = [
@@ -37,6 +56,7 @@ const iceCream = [
 
 const tabs = [
   { id: 'soda', label: 'Soda bar', icon: CupSoda },
+  { id: 'puffs', label: 'Puffs', icon: Croissant },
   { id: 'icecream', label: 'Ice cream', icon: IceCreamCone },
 ]
 
@@ -54,8 +74,8 @@ export default function BeverageMenu() {
       <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
         <SectionHeader
           eyebrow="At the counter"
-          title="Sixteen sodas, *mixed while you wait.*"
-          lead="From ₹10. Hocco ice cream in the freezer beside the machine."
+          title="Twenty sodas, *mixed while you wait.*"
+          lead="From ₹10. Hot puffs from the oven and Hocco ice cream in the freezer beside the machine."
         />
 
         <div
@@ -99,7 +119,7 @@ export default function BeverageMenu() {
           transition={{ duration: 0.35, ease: ease.outExpo }}
           className="mt-12"
         >
-          {tab === 'soda' ? <SodaPanel /> : <IceCreamPanel />}
+          {tab === 'soda' ? <SodaPanel /> : tab === 'puffs' ? <PuffPanel /> : <IceCreamPanel />}
         </motion.div>
       </AnimatePresence>
     </Section>
@@ -118,14 +138,12 @@ function SodaPanel() {
         <div className="overflow-hidden rounded-panel bg-inverse shadow-lift">
           <Video name="soda-bar" aspect={4 / 5} />
         </div>
-        <figure className="overflow-hidden rounded-panel bg-inverse shadow-soft lg:hidden">
-          <Video name="soda-menu" aspect={4 / 5} />
-        </figure>
-        <figure className="hidden overflow-hidden rounded-card border border-line lg:block">
+        <figure className="overflow-hidden rounded-panel border border-line">
           <SmartImage
-            picture={img.sodaMenuBoard}
-            alt="The soda menu board in the shop, listing every flavour and price"
-            sizes="38vw"
+            picture={img.sodaAndPuffMenu}
+            alt="The soda and puff menu boards outside the shop, listing every flavour and price"
+            sizes="(max-width: 1024px) 46vw, 38vw"
+            aspect={4 / 5}
           />
         </figure>
       </div>
@@ -179,6 +197,60 @@ function SodaPanel() {
             ))}
           </AnimatePresence>
         </motion.ul>
+      </div>
+    </div>
+  )
+}
+
+function PuffPanel() {
+  return (
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-8">
+      <figure className="overflow-hidden rounded-panel border border-line lg:col-span-5">
+        <SmartImage
+          picture={img.sodaAndPuffMenu}
+          alt="The puff menu board outside the shop"
+          sizes="(max-width: 1024px) 92vw, 38vw"
+          aspect={4 / 5}
+          imgClassName="object-bottom"
+        />
+      </figure>
+
+      <div className="lg:col-span-7">
+        <ul className="overflow-hidden rounded-panel border border-line bg-canvas">
+          {puffs.map((p) => (
+            <li
+              key={p.name}
+              className="flex items-baseline gap-3 border-b border-line px-5 py-3.5 last:border-b-0 hover:bg-surface"
+            >
+              <span className="font-display text-lg text-ink">{p.name}</span>
+              <span
+                aria-hidden="true"
+                className="mx-1 min-w-4 flex-1 translate-y-[-0.25em] border-b border-dotted border-line-strong"
+              />
+              <span className="font-body text-sm font-bold tabular-nums text-ink">₹{p.price}</span>
+            </li>
+          ))}
+        </ul>
+
+        <div className="mt-4 rounded-panel border border-line bg-canvas p-6 sm:p-8">
+          <p className="eyebrow text-brand">Crispy outside, fluffy inside</p>
+          <p className="mt-2 text-h3 text-ink">
+            Baked here, <em>served hot.</em>
+          </p>
+          <p className="mt-2 max-w-md font-body text-sm text-ink-soft">
+            Vegetable, Chinese, sev and cheese puffs from our own oven. Ask what is fresh
+            out when you come by, or message to reserve a batch.
+          </p>
+          <Button
+            href={whatsappLink(waMessage.category('puffs'))}
+            variant="whatsapp"
+            size="sm"
+            className="mt-5"
+          >
+            <MessageCircle size={15} />
+            Ask about puffs
+          </Button>
+        </div>
       </div>
     </div>
   )

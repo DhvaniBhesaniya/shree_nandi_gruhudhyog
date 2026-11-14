@@ -38,7 +38,6 @@ const clips = [
   ['soda-bar', 'VID20261112194836.mp4', 18, 8, true], // soda machine
   ['freezer', 'VID20261112194836.mp4', 27, 7, true], // Hocco freezer
   ['brand-mark', 'VID20261112200311.mp4', 0, 6, true], // SNG logo on the puff box
-  ['soda-menu', 'VID20261112200311.mp4', 8, 8, true], // soda menu board
   ['homemade-tubs', 'VID20261112200311.mp4', 42, 9, true], // homemade farsan tubs
 ]
 

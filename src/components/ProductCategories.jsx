@@ -28,7 +28,7 @@ const categories = [
   { name: 'Festive & gift boxes', gu: 'ઉત્સવ', blurb: 'Cookie selections and ladoo boxes for Diwali and weddings.', picture: img.festiveCookieBox, span: 'lg:col-span-3', aspect: 4 / 5 },
   { name: 'Pickles & achaar', gu: 'અથાણા', blurb: 'Mango, lime and mixed, from the brands we trust.', picture: img.pickles, span: 'lg:col-span-3', aspect: 4 / 5 },
   { name: 'Chips & wafers', gu: 'વેફર', blurb: 'Banana wafers, Mexican chilli chips, Cornitos and more.', picture: img.bananaWafers, span: 'lg:col-span-4', aspect: 4 / 3 },
-  { name: 'Soda bar & ice cream', gu: 'સોડા', blurb: 'Sixteen sodas mixed at the counter, Hocco in the freezer.', picture: img.hoccoFreezer, span: 'lg:col-span-4', aspect: 4 / 3 },
+  { name: 'Soda bar & ice cream', gu: 'સોડા', blurb: 'Twenty sodas mixed at the counter, hot puffs, Hocco in the freezer.', picture: img.hoccoFreezer, span: 'lg:col-span-4', aspect: 4 / 3 },
   { name: 'Everyday brands', gu: 'બ્રાન્ડ', blurb: 'Biscuits, noodles, mamra, sauces — five hundred lines.', picture: img.biscuitWall, span: 'lg:col-span-4', aspect: 4 / 3 },
 ]
 

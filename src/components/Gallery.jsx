@@ -56,7 +56,7 @@ const photos = [
   // --- Beverages
   { key: 'freezer', picture: img.hoccoFreezer, tag: 'Beverages', alt: 'The Hocco freezer' },
   { key: 'soda-dispenser', picture: img.sodaDispenser, tag: 'Beverages', alt: 'The soda dispenser with its flavour taps' },
-  { key: 'soda-board', picture: img.sodaMenuBoard, tag: 'Beverages', alt: 'Soda menu board — regular and special flavours from ₹10' },
+  { key: 'soda-board', picture: img.sodaAndPuffMenu, tag: 'Beverages', alt: 'Soda and puff menu boards — twenty sodas from ₹10, puffs from ₹25' },
   { key: 'fridge', picture: img.beverageRefrigerator, tag: 'Beverages', alt: 'Chilled drinks fridge' },
   { key: 'hocco', picture: img.hoccoIcecreamMenu, tag: 'Beverages', alt: 'Hocco ice cream menu — cones, bars, kulfis and sundaes' },
 ]

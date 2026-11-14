@@ -14,6 +14,7 @@ const productOptions = [
   'Bakery & Cookies',
   'Wafers, Chips & Chocolates',
   'Soda & Cold Drinks',
+  'Puffs',
   'Ice Cream',
   'Bulk / Wholesale order',
   'Something else',
